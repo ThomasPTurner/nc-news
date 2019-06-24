@@ -5,10 +5,10 @@ exports.formatDate = list => {
     });
 };
 
-exports.makeRefObj = ( arr, key = 'article_name', value = 'id') => {
+exports.makeRefObj = ( arr, key = 'title', value = 'id') => {
     const refObj = {}
-    arr.forEach(person => {
-        refObj[person[key]] = person[value];
+    arr.forEach(article => {
+        refObj[article[key]] = article[value];
     })
     return refObj
 }
@@ -18,8 +18,10 @@ exports.formatComments = (comments, articleRef) => {
     let newMember = {};
     comments.forEach(comment => {
         newComment = Object.assign({}, comment);
-        newComment.article_id = articleRef[comment.article_name]
-        delete newComment.article_name
+        newComment.article_id = articleRef[comment.belongs_to]
+        delete newComment.belongs_to
+        newComment.author = comment.created_by
+        delete newComment.created_by
         output.push(newComment)
     })
     return output

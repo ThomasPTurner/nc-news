@@ -13,17 +13,12 @@ exports.seed = function(knex, Promise) {
       return Promise.all([topicsInsertions, usersInsertions])
         .then(() => {
           const formattedArticleData = formatDate(articleData)
-          return knex('articles').insert(formattedArticleData)
- 
+          return knex('articles').insert(formattedArticleData).returning('*')
         })
         .then(articleRows => {
-          /* 
-          Keys need renaming, values need changing, and most annoyingly, your comments currently only refer to the title of the article they belong to, not the id. 
-          You will need to write and test the provided makeRefObj and formatComments utility functions to be able insert your comment data.
-          */
-    
           const articleRef = makeRefObj(articleRows);
-          const formattedComments = formatComments(commentData, articleRef);
+          let formattedComments = formatComments(commentData, articleRef);
+          formattedComments = formatDate(formattedComments)
           return knex('comments').insert(formattedComments);
         });
     })

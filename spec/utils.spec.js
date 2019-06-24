@@ -47,8 +47,8 @@ describe('makeRefObj', () => {
       expect(actual).to.eql(expected);
     });
     it('takes other arguments to build the refObj', () => {
-      const input = [{name: 'Tom', article_name: '1', anotherKey: 'bar'}, {name: 'Dick', article_name: '2', anotherKey: 'foo'}];
-      const actual = makeRefObj(input, 'article_name', 'anotherKey');
+      const input = [{name: 'Tom', belongs_to: '1', anotherKey: 'bar'}, {name: 'Dick', belongs_to: '2', anotherKey: 'foo'}];
+      const actual = makeRefObj(input, 'belongs_to', 'anotherKey');
       const expected = {1: 'bar', 2: 'foo'};
       expect(actual).to.eql(expected);
     });
@@ -58,32 +58,38 @@ describe('formatComments', () => {
         expect(formatComments([],{})).to.eql([])
     })
     it('changes a single KV pair', () => {
-        const comments = [{name: 'bad', article_name: 'bacon'}];
+        const comments = [{created_by: 'bad', belongs_to: 'bacon'}];
         const refObj = {bacon: 1};
         const actual = formatComments(comments, refObj);
-        const expected = [{name: 'bad', article_id: 1}];
+        const expected = [{author: 'bad', article_id: 1}];
         expect(actual).to.eql(expected);
     })
     it('changes multiple KV pairs for a single article', () => {
-        const comments = [{name: 'bad', article_name: 'bacon'},{name: 'cake', article_name: 'bacon'}];
+        const comments = [{created_by: 'bad', belongs_to: 'bacon'},{created_by: 'cake', belongs_to: 'bacon'}];
         const refObj = {bacon: 1};
         const actual = formatComments(comments, refObj);
-        const expected = [{name: 'bad', article_id: 1},{name: 'cake', article_id: 1}];
+        const expected = [{author: 'bad', article_id: 1},{author: 'cake', article_id: 1}];
         expect(actual).to.eql(expected);
     })
     it('changes multiple KV pairs for different articles', () => {
-        const comments = [{name: 'bad', article_name: 'bacon'},{name: 'cake', article_name: 'batman'}];
+        const comments = [{created_by: 'bad', belongs_to: 'bacon'},{created_by: 'cake', belongs_to: 'batman'}];
         const refObj = {bacon: 1, batman: 2};
         const actual = formatComments(comments, refObj);
-        const expected = [{name: 'bad', article_id: 1},{name: 'cake', article_id: 2}];
+        const expected = [{author: 'bad', article_id: 1},{author: 'cake', article_id: 2}];
         expect(actual).to.eql(expected);
     })
     it('does not mutate the input', () => {
-        const comments = [{name: 'bad', article_name: 'bacon'},{name: 'cake', article_name: 'batman'}];
+        const comments = [{created_by: 'bad', belongs_to: 'bacon'},{created_by: 'cake', belongs_to: 'batman'}];
         const refObj = {bacon: 1, batman: 2};
         const actual = formatComments(comments, refObj);
-        const expected = [{name: 'bad', article_id: 1},{name: 'cake', article_id: 2}];
-        expect(comments).to.eql([{name: 'bad', article_name: 'bacon'},{name: 'cake', article_name: 'batman'}]);
+        const expected = [{author: 'bad', article_id: 1},{author: 'cake', article_id: 2}];
+        expect(comments).to.eql([{created_by: 'bad', belongs_to: 'bacon'},{created_by: 'cake', belongs_to: 'batman'}]);
     })
-
+    it('changes key "created_by" to "author"', () => {
+        const comments = [{created_by: 'bad', belongs_to: 'bacon'}];
+        const refObj = {bacon: 1};
+        const actual = formatComments(comments, refObj);
+        const expected = [{author: 'bad', article_id: 1}];
+        expect(actual).to.eql(expected);
+    });
 });
