@@ -1,28 +1,24 @@
 exports.formatDate = list => {
-    return list.map( obj => {
-        obj.created_at = new Date(obj.created_at);
-        return obj;
+    return list.map( ({created_at, ...rest}) => {
+        return { created_at: new Date(created_at), ...rest}
     });
 };
 
-exports.makeRefObj = ( arr, key = 'title', value = 'id') => {
+exports.makeRefObj = (arr) => {
     const refObj = {}
-    arr.forEach(article => {
-        refObj[article[key]] = article[value];
-    })
-    return refObj
-}
+    arr.forEach(({title, id}) => {
+        refObj[title] = id;
+    });
+    return refObj;
+};
 
 exports.formatComments = (comments, articleRef) => {
-    const output = [];
-    let newMember = {};
-    comments.forEach(comment => {
-        newComment = Object.assign({}, comment);
-        newComment.article_id = articleRef[comment.belongs_to]
-        delete newComment.belongs_to
-        newComment.author = comment.created_by
-        delete newComment.created_by
-        output.push(newComment)
-    })
-    return output
+    return comments.map( ({ belongs_to, created_by, created_at, ...rest }) => {
+        return {
+            article_id: articleRef[belongs_to],
+            author: created_by,
+            created_at: new Date(created_at),
+            ...rest
+        };
+    });
 };
