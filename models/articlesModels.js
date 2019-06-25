@@ -7,7 +7,15 @@ exports.fetchArticles = () => {
 
 exports.fetchArticleById = (id) => {
     return connection('articles')
-        .select('articles.id','articles.topic', 'articles.title', 'articles.body')
+        .select(
+            `articles.author`,
+            `articles.title`,
+            `articles.id`,
+            `articles.body`,
+            `articles.topic`,
+            `articles.created_at`,
+            `articles.votes`
+        )
         .countDistinct('comments.id AS comment_count')
         .join('comments','articles.id','=','comments.article_id')
         .groupBy('articles.id')

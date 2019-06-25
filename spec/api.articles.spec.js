@@ -19,15 +19,26 @@ describe('api/articles', () => {
         //         });
         // });
         describe('GET by article ID', () => {
-            it('retrives a single article', () => {
+            it('retrives a single article with the correct keys', () => {
                 return request
                     .get('/api/articles/1')
                     .expect(200)
-                    .then(( {body: {article: {title}}} ) => {
-                        expect(title).to.equal('Living in the shadow of a great man');
+                    .then(({body: {article}}) => {
+                        const keys = Object.keys(article)
+                        expect(keys).to.eql([
+                            'author',
+                            'title',
+                            'id',
+                            'body',
+                            'topic',
+                            'created_at',
+                            'votes',
+                            'comment_count'
+                        ]);
+                        expect(article.id).to.equal(1)
                     });
             });
-            it('atricle has comment_count', () => {
+            it('article has correct comment_count', () => {
                 return request
                     .get('/api/articles/1')
                     .expect(200)
