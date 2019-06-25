@@ -17,7 +17,8 @@ exports.getArticleById = ({params: { id }}, res, next)=>{
 }
 exports.patchArticle = ({body, params: { id }}, res, next) => {
     return changeArticle(id, body)
-    .then((article)=>{
-        res.status(202).send(article)
+    .then(([votes])=>{
+        res.status(200).send({votes})
     })
+    .catch(next)
 };

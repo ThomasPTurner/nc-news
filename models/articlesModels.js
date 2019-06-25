@@ -7,15 +7,17 @@ exports.fetchArticles = () => {
 
 exports.fetchArticleById = (id) => {
     return connection('articles')
-        .select('*')
-        .where({id})
+        .select('articles.id','articles.topic', 'articles.title', 'articles.body')
+        .countDistinct('comments.id AS comment_count')
+        .join('comments','articles.id','=','comments.article_id')
+        .groupBy('articles.id')
+        .where({['articles.id']: id})
 }
 
-exports.changeArticle = (id, {body, title, topic}) => {
+exports.changeArticle = (id, {inc_votes}) => {
     return connection('articles')
     .select('*')
     .where({id})
-    .update({ body })
-    .returning('*')
-    .then(article => article)
+    .increment('votes', inc_votes)
+    .returning('votes')
 }

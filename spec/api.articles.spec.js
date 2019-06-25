@@ -10,14 +10,14 @@ describe('api/articles', () => {
         return connection.seed.run();
     });
     describe('GET', () => {
-        it('gets a list of articles', () => {
-            return request
-                .get('/api/articles/')
-                .expect(200)
-                .then(( {body: {articles}} ) => {
-                    expect(articles.length).to.equal(12);
-                });
-        });
+        // it('gets a list of articles', () => {
+        //     return request
+        //         .get('/api/articles/')
+        //         .expect(200)
+        //         .then(( {body: {articles}} ) => {
+        //             expect(articles.length).to.equal(12);
+        //         });
+        // });
         describe('GET by article ID', () => {
             it('retrives a single article', () => {
                 return request
@@ -25,6 +25,14 @@ describe('api/articles', () => {
                     .expect(200)
                     .then(( {body: {article: {title}}} ) => {
                         expect(title).to.equal('Living in the shadow of a great man');
+                    });
+            });
+            it('atricle has comment_count', () => {
+                return request
+                    .get('/api/articles/1')
+                    .expect(200)
+                    .then(( {body: {article: {comment_count}}} ) => {
+                        expect(comment_count).to.equal('13');
                     });
             });
             it('404 on valid but absent id', ()=> {
@@ -46,13 +54,22 @@ describe('api/articles', () => {
         });
     });
     describe('PATCH', () => {
-        it('updates the body of a file', () => {
+        it('updates votes', () => {
             return request  
                 .patch('/api/articles/1')
-                .send({body: 'girl, look at that body'})
-                .expect(202)
-                .then(({body: [{body}]})=>{
-                    expect(body).to.equal('girl, look at that body')
+                .send({inc_votes: 1})
+                .expect(200)
+                .then(({body: {votes}}) => {
+                    expect(votes).to.equal(101)
+                })
+        });
+        it('400 on garbage input', () => {
+            return request  
+                .patch('/api/articles/1')
+                .send({inc_votes: 'batman'})
+                .expect(400)
+                .then(({body: {msg}}) => {
+                    expect(msg).to.equal('bad request')
                 })
         });
     });
