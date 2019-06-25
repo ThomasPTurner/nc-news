@@ -18,5 +18,31 @@ describe('api/articles', () => {
                     expect(articles.length).to.equal(12);
                 });
         });
+        describe('GET by user ID', () => {
+            it('retrives a single article', () => {
+                return request
+                    .get('/api/articles/1')
+                    .expect(200)
+                    .then(( {body: {article: {title}}} ) => {
+                        expect(title).to.equal('Living in the shadow of a great man');
+                    });
+            });
+            // it('404 on valid but absent id', ()=> {
+            //     return request 
+            //         .get('/api/articles/9001')
+            //         .expect(404)
+            //         .then(({body: {msg}}) => {
+            //             expect(msg).to.equal('article not found')
+            //         });
+            // });
+            // it('404 on invalid id', ()=> {
+            //     return request 
+            //         .get('/api/articles/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+            //         .expect(404)
+            //         .then(({body: {msg}}) => {
+            //             expect(msg).to.equal('article not found')
+            //         });
+            // });
+        });
     });
 });
