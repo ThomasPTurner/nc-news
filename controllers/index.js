@@ -1,3 +1,4 @@
 const topicsContollers = require('./topicsControllers');
 const usersControllers = require('./usersControllers');
-module.exports = { ...topicsContollers, ...usersControllers };
+const articlesControllers = require('./articlesControllers')
+module.exports = { ...topicsContollers, ...usersControllers, ...articlesControllers };

@@ -1,3 +1,4 @@
 const usersModels = require('./usersModels')
 const topicsModels = require('./topicsModels')
-module.exports = { ...topicsModels, ...usersModels } 
+const articlesModels = require('./articlesModels')
+module.exports = { ...topicsModels, ...usersModels, ...articlesModels } 

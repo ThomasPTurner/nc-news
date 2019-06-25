@@ -27,9 +27,17 @@ describe('api/users', () => {
                         expect(username).to.equal('fred');
                     });
             });
-            it('404 on invalid id', ()=> {
+            it('404 on valid but absent id', ()=> {
                 return request 
                     .get('/api/users/batman')
+                    .expect(404)
+                    .then(({body: {msg}}) => {
+                        expect(msg).to.equal('user not found')
+                    });
+            });
+            it('404 on invalid id', ()=> {
+                return request 
+                    .get('/api/users/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
                     .expect(404)
                     .then(({body: {msg}}) => {
                         expect(msg).to.equal('user not found')
