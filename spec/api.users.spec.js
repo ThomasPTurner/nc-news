@@ -34,7 +34,6 @@ describe('api/users', () => {
                     .then(({body: {msg}}) => {
                         expect(msg).to.equal('user not found')
                     });
-                    
             });
         });
     });

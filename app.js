@@ -1,10 +1,11 @@
 const express = require('express')
 const app = express()
 const { apiRouter } = require('./routers/')
-const { handle404 } = require('./errors/')
+const { handleWithCode, catchAll404, handle500 } = require('./errors/')
 app.use('/api', apiRouter)
 
-
-app.use(handle404)
+app.use('/*', catchAll404)
+app.use(handleWithCode)
+app.use(handle500)
 
 module.exports = app
