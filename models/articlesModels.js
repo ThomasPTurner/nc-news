@@ -10,3 +10,12 @@ exports.fetchArticleById = (id) => {
         .select('*')
         .where({id})
 }
+
+exports.changeArticle = (id, {body, title, topic}) => {
+    return connection('articles')
+    .select('*')
+    .where({id})
+    .update({ body })
+    .returning('*')
+    .then(article => article)
+}

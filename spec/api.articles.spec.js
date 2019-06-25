@@ -45,4 +45,15 @@ describe('api/articles', () => {
             });
         });
     });
+    describe('PATCH', () => {
+        it('updates the body of a file', () => {
+            return request  
+                .patch('/api/articles/1')
+                .send({body: 'girl, look at that body'})
+                .expect(202)
+                .then(({body: [{body}]})=>{
+                    expect(body).to.equal('girl, look at that body')
+                })
+        });
+    });
 });

@@ -1,13 +1,13 @@
-const { fetchArticles, fetchArticleById }  = require('../models')
+const { fetchArticles, fetchArticleById, changeArticle }  = require('../models')
 
-const getArticles = (req, res, next) => {
+exports.getArticles = (req, res, next) => {
     return fetchArticles()
         .then((articles)=>{
             res.status(200).send({articles})
         })
         .catch(next)
 }
-const getArticleById = ({params: { id }}, res, next)=>{
+exports.getArticleById = ({params: { id }}, res, next)=>{
     return fetchArticleById(id)
         .then(([article]) => {
             if (!article) return Promise.reject({code: 404, msg: 'article not found'})
@@ -15,4 +15,9 @@ const getArticleById = ({params: { id }}, res, next)=>{
         })
         .catch(next);
 }
-module.exports = { getArticles, getArticleById }
+exports.patchArticle = ({body, params: { id }}, res, next) => {
+    return changeArticle(id, body)
+    .then((article)=>{
+        res.status(202).send(article)
+    })
+};

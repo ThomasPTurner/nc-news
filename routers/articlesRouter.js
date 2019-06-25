@@ -1,7 +1,11 @@
 const express = require('express');
-const { getArticles, getArticleById } = require('../controllers/');
+const { getArticles, getArticleById, patchArticle } = require('../controllers/');
 const articlesRouter = express.Router();
+
+articlesRouter.route('/:id')
+    .get(getArticleById)
+    .patch(patchArticle)
+
 articlesRouter.route('/').get(getArticles);
-articlesRouter.route('/:id').get(getArticleById);
 
 module.exports =  articlesRouter;
