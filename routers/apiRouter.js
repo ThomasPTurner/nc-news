@@ -1,9 +1,9 @@
 const express = require('express');
-const topicsRouter = require('../routers/topicsRouter');
-const usersRouter = require('../routers/topicsRouter');
+const topicsRouter = require('./topicsRouter');
+const usersRouter = require('./usersRouter');
 const apiRouter = express.Router();
 
-apiRouter.use('/topics', topicsRouter);
 apiRouter.use('/users', usersRouter);
+apiRouter.use('/topics', topicsRouter);
 
 module.exports = apiRouter;

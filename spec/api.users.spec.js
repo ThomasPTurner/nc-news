@@ -5,7 +5,7 @@ const request = require('supertest')(app);
 const {connection} = require('../connection');
 
 
-describe.only('api/users', () => {
+describe('api/users', () => {
     beforeEach(() => {
         return connection.seed.run();
     });
