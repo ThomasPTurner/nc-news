@@ -23,6 +23,18 @@ describe('api/users', () => {
                 return request
                     .get('/api/users/fred')
                     .expect(200)
+                    .then(( {body: {user: {username}}} ) => {
+                        expect(username).to.equal('fred');
+                    });
+            });
+            it('404 on invalid id', ()=> {
+                return request 
+                    .get('/api/users/batman')
+                    .expect(404)
+                    .then(({body: {msg}}) => {
+                        expect(msg).to.equal('user not found')
+                    });
+                    
             });
         });
     });
