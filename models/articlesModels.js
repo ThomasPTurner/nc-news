@@ -8,5 +8,5 @@ exports.fetchArticles = () => {
 exports.fetchArticleById = (id) => {
     return connection('articles')
         .select('*')
-        .where('id','=','1')
+        .where({id})
 }

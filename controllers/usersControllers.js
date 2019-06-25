@@ -6,6 +6,7 @@ const getUsers = (req, res, next) => {
         })
         .catch(next)
 }
+
 const getUserById = ({params: { id }}, res, next)=>{
     return fetchUserById(id)
         .then(([user]) => {
@@ -14,5 +15,6 @@ const getUserById = ({params: { id }}, res, next)=>{
         })
         .catch(next);
 }
+
 
 module.exports = { getUsers, getUserById }
