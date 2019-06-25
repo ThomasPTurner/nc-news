@@ -29,4 +29,9 @@ module.exports = [
     name: 'Jess Jelly',
     avatar_url: 'https://s-media-cache-ak0.pinimg.com/564x/39/62/ec/3962eca164e60cf46f979c1f57d4078b.jpg',
   },
+  {
+    username: 'fred',
+    name: 'fred',
+    avatar_url: 'https://www.google.com/url?sa=i&source=images&cd=&ved=2ahUKEwj_1oel74TjAhW88uAKHTZGBmcQjRx6BAgBEAU&url=http%3A%2F%2Fwallpaperswide.com%2Fcute_dino-wallpapers.html&psig=AOvVaw379lH22eamFQSRQ-d2WLac&ust=1561559882418535',
+  }
 ];

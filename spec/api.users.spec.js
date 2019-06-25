@@ -9,14 +9,21 @@ describe('api/users', () => {
     beforeEach(() => {
         return connection.seed.run();
     });
-    describe('GET', () => {
+    describe('GET all', () => {
         it('gets a list of users', () => {
             return request
                 .get('/api/users/')
                 .expect(200)
                 .then(( {body: {users}} ) => {
-                    expect(users.length).to.equal(4);
+                    expect(users.length).to.equal(5);
                 });
+        });
+        describe('GET by user ID', () => {
+            it('retrives a single user', () => {
+                return request
+                    .get('/api/users/fred')
+                    .expect(200)
+            });
         });
     });
 });
