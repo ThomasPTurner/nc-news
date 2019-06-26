@@ -74,7 +74,7 @@ describe('api/articles', () => {
                     expect(votes).to.equal(101)
                 })
         });
-        it('400 on garbage input', () => {
+        it('400 on bad value', () => {
             return request  
                 .patch('/api/articles/1')
                 .send({inc_votes: 'batman'})
@@ -82,6 +82,42 @@ describe('api/articles', () => {
                 .then(({body: {msg}}) => {
                     expect(msg).to.equal('bad request')
                 })
+        });
+        it('400 on bad key', () => {
+            return request  
+                .patch('/api/articles/1')
+                .send({batman: 1})
+                .expect(400)
+                .then(({body: {msg}}) => {
+                    expect(msg).to.equal('bad request')
+                })
+        });
+        it('400 on additional keys', () => {
+            return request  
+                .patch('/api/articles/1')
+                .send({batman: 1, inc_votes: 1})
+                .expect(400)
+                .then(({body: {msg}}) => {
+                    expect(msg).to.equal('bad request')
+                })
+        });
+        it('404 on valid but absent id', ()=> {
+            return request 
+                .patch('/api/articles/9001')
+                .send({inc_votes: 1})
+                .expect(404)
+                .then(({body: {msg}}) => {
+                    expect(msg).to.equal('article not found')
+                });
+        });
+        it('400 on invalid id', ()=> {
+            return request 
+                .patch('/api/articles/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+                .send({inc_votes: 1})
+                .expect(400)
+                .then(({body: {msg}}) => {
+                    expect(msg).to.equal('bad request')
+                });
         });
     });
 });

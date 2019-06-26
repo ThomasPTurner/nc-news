@@ -22,7 +22,10 @@ exports.fetchArticleById = (id) => {
         .where({['articles.id']: id})
 }
 
-exports.changeArticle = (id, {inc_votes}) => {
+exports.changeArticle = (id, {inc_votes, ...rest}) => {
+    if (Object.keys(rest).length || !inc_votes) { // validate object
+        return Promise.reject({code: 400, msg: 'bad request'})
+    }
     return connection('articles')
     .select('*')
     .where({id})

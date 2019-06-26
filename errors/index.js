@@ -3,6 +3,7 @@ exports.handleWithCode = (err, req, res, next) => {
     else next(err)
 }
 exports.handle500 = (err, req, res, next) => {
+    console.log(err)
     res.status(500).send({code: 500, msg: 'interal server error'})
 }
 exports.handlePGerrors = (err, req, res, next) => {

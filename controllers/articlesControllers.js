@@ -18,6 +18,7 @@ exports.getArticleById = ({params: { id }}, res, next)=>{
 exports.patchArticle = ({body, params: { id }}, res, next) => {
     return changeArticle(id, body)
     .then(([votes])=>{
+        if (!votes) return Promise.reject({code: 404, msg: 'article not found'})
         res.status(200).send({votes})
     })
     .catch(next)
