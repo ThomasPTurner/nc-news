@@ -28,7 +28,9 @@ exports.patchComment = (req, res, next) => {
 
 exports.deleteComment = (req, res, next) => {
     removeComment(req)
-        .then(()=> {
+        .then(([comment])=> {
+            if (!comment) return Promise.reject({code:404, msg: 'not found'})
             res.status(204).send()
         })
+        .catch(next)
 }

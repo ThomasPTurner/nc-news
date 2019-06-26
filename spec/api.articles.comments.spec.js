@@ -20,7 +20,23 @@ describe('api/comments', () => {
                         .where({id: 2})
                 })
                 .then(comment => {
-                    expect(comment.length).to.equal(0)
+                    expect(comment.length).to.equal(0) //checking it's not there any more
+                })
+        });
+        it('404 on bad article', () => {
+            return request 
+                .delete('/api/articles/9001/comments/2')
+                .expect(404)
+                .then( ({body: {msg}}) => {
+                  expect(msg).to.equal('not found')
+                })
+        });
+        it('404 on bad comment', () => {
+            return request 
+                .delete('/api/articles/9001/comments/2')
+                .expect(404)
+                .then( ({body: {msg}}) => {
+                  expect(msg).to.equal('not found')
                 })
         });
     });

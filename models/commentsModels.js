@@ -27,4 +27,5 @@ exports.removeComment = ({params: {id, comment_id}}) => {
     return connection('comments')
         .where({article_id: id, id: comment_id})
         .delete()
+        .returning('*')
 }
