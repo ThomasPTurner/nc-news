@@ -5,7 +5,7 @@ const request = require('supertest')(app);
 const {connection} = require('../connection');
 
 
-describe('api/topics', () => {
+describe.skip('api/topics', () => {
     beforeEach(() => {
         return connection.seed.run();
     });
