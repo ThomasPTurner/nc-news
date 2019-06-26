@@ -23,3 +23,7 @@ exports.handlePGerrors = (err, req, res, next) => {
 exports.catchAll404 = (req,res,next) => {
     next({code: 404, msg:'Page not found'})
 }
+
+exports.badMethod = (req,res,next) => {
+    next({code: 405, msg: "bad method"})
+}

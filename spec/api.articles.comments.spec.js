@@ -11,35 +11,21 @@ describe('api/comments', () => {
     beforeEach(() => {
         return connection.seed.run();
     });
-    describe('DELETE', () => {
-        it('deletes an entry', () => {
-            return request 
-                .delete('/api/articles/1/comments/2')
-                .expect(204)
-                .then( () => {
-                    return connection('comments')
-                        .select('*')
-                        .where({id: 2})
-                })
-                .then(comment => {
-                    expect(comment.length).to.equal(0) //checking it's not there any more
-                })
+    describe.only('invalid methods caught', () => {
+        it('PUT', () => {
+            return request
+                .put('/api/articles/1/comments')
+                .expect(405)
         });
-        it('404 on bad article', () => {
-            return request 
-                .delete('/api/articles/9001/comments/2')
-                .expect(404)
-                .then( ({body: {msg}}) => {
-                  expect(msg).to.equal('not found')
-                })
+        it('DELETE', () => {
+            return request
+                .delete('/api/articles/1/comments')
+                .expect(405)
         });
-        it('404 on bad comment', () => {
-            return request 
-                .delete('/api/articles/9001/comments/2')
-                .expect(404)
-                .then( ({body: {msg}}) => {
-                  expect(msg).to.equal('not found')
-                })
+        it('PATCH', () => {
+            return request
+                .patch('/api/articles/1/comments')
+                .expect(405)
         });
     });
     describe('GET', () => {
@@ -149,79 +135,129 @@ describe('api/comments', () => {
             });
         });
     });
-    describe('PATCH', () => {
-        it('increments the vote on a comment', () => {
-            return request
-            .patch('/api/articles/1/comments/2')
-            .send({inc_votes: 1})
-            .expect(200)
-            .then(({body: {comment: {votes, id}}}) => {
-                expect(votes).to.equal(15);
-                expect(id).to.equal(2);
+    describe('api/articles/:id/comments/:id', () => {
+        describe.only('invalid methods caught', () => {
+            it('PUT', () => {
+                return request
+                    .put('/api/articles/1/comments/2')
+                    .expect(405)
+            });
+            it('GET', () => {
+                return request
+                    .get('/api/articles/1/comments/2')
+                    .expect(405)
+            });
+            it('POST', () => {
+                return request
+                    .post('/api/articles/1/comments/2')
+                    .expect(405)
+            });
+        });
+        describe('DELETE', () => {
+            it('deletes an entry', () => {
+                return request 
+                    .delete('/api/articles/1/comments/2')
+                    .expect(204)
+                    .then( () => {
+                        return connection('comments')
+                            .select('*')
+                            .where({id: 2})
+                    })
+                    .then(comment => {
+                        expect(comment.length).to.equal(0) //checking it's not there any more
+                    })
+            });
+            it('404 on bad article', () => {
+                return request 
+                    .delete('/api/articles/9001/comments/2')
+                    .expect(404)
+                    .then( ({body: {msg}}) => {
+                      expect(msg).to.equal('not found')
+                    })
+            });
+            it('404 on bad comment', () => {
+                return request 
+                    .delete('/api/articles/9001/comments/2')
+                    .expect(404)
+                    .then( ({body: {msg}}) => {
+                      expect(msg).to.equal('not found')
+                    })
+            });
+        });
+        describe('PATCH', () => {
+            it('increments the vote on a comment', () => {
+                return request
+                .patch('/api/articles/1/comments/2')
+                .send({inc_votes: 1})
+                .expect(200)
+                .then(({body: {comment: {votes, id}}}) => {
+                    expect(votes).to.equal(15);
+                    expect(id).to.equal(2);
+                })
             })
-        })
-        it('404 on a non existant article', () => {
-            return request
-                .patch('/api/articles/9001/comments/2')
-                .send({inc_votes: 1})
-                .expect(404)
-                .then(({body: {msg}}) => {
-                    expect(msg).to.equal('not found');
+            it('404 on a non existant article', () => {
+                return request
+                    .patch('/api/articles/9001/comments/2')
+                    .send({inc_votes: 1})
+                    .expect(404)
+                    .then(({body: {msg}}) => {
+                        expect(msg).to.equal('not found');
+                });
             });
-        });
-        it('404 on a non existant comment', () => {
-            return request
-                .patch('/api/articles/9001/comments/1')
-                .send({inc_votes: 1})
-                .expect(404)
-                .then(({body: {msg}}) => {
-                    expect(msg).to.equal('not found');
+            it('404 on a non existant comment', () => {
+                return request
+                    .patch('/api/articles/9001/comments/1')
+                    .send({inc_votes: 1})
+                    .expect(404)
+                    .then(({body: {msg}}) => {
+                        expect(msg).to.equal('not found');
+                });
             });
-        });
-        it('allows negative votes', () => {
-            return request  
-                .patch('/api/articles/1/comments/2')
-                .send({inc_votes: -1})
-                .expect(200)
-                .then(({ body: { comment: { votes }}}) => {
-                    expect(votes).to.equal(13)
-                })
-        });
-        it('allows votes to be negative', () => {
-            return request  
-                .patch('/api/articles/1/comments/2')
-                .send({inc_votes: -15})
-                .expect(200)
-                .then(({ body: { comment: { votes }}}) => {
-                    expect(votes).to.equal(-1)
-                })
-        });
-        it('400 on bad value', () => {
-            return request  
-                .patch('/api/articles/1/comments/2')
-                .send({inc_votes: 'batman'})
-                .expect(400)
-                .then(({body: {msg}}) => {
-                    expect(msg).to.equal('bad request')
-                })
-        });
-        it('400 on bad key', () => {
-            return request  
-                .patch('/api/articles/1/comments/2')
-                .send({batman: 1})
-                .expect(400)
-                .then(({body: {msg}}) => {
-                    expect(msg).to.equal('bad request')
-                })
-        });
-        it('400 on additional keys', () => {
-            return request  
-                .patch('/api/articles/1/comments/2')
-                .send({batman: 1, inc_votes: 1})
-                .expect(400)
-                .then(({body: {msg}}) => {
-                    expect(msg).to.equal('bad request')
-                })
-        });
+            it('allows negative votes', () => {
+                return request  
+                    .patch('/api/articles/1/comments/2')
+                    .send({inc_votes: -1})
+                    .expect(200)
+                    .then(({ body: { comment: { votes }}}) => {
+                        expect(votes).to.equal(13)
+                    })
+            });
+            it('allows votes to be negative', () => {
+                return request  
+                    .patch('/api/articles/1/comments/2')
+                    .send({inc_votes: -15})
+                    .expect(200)
+                    .then(({ body: { comment: { votes }}}) => {
+                        expect(votes).to.equal(-1)
+                    })
+            });
+            it('400 on bad value', () => {
+                return request  
+                    .patch('/api/articles/1/comments/2')
+                    .send({inc_votes: 'batman'})
+                    .expect(400)
+                    .then(({body: {msg}}) => {
+                        expect(msg).to.equal('bad request')
+                    })
+            });
+            it('400 on bad key', () => {
+                return request  
+                    .patch('/api/articles/1/comments/2')
+                    .send({batman: 1})
+                    .expect(400)
+                    .then(({body: {msg}}) => {
+                        expect(msg).to.equal('bad request')
+                    })
+            });
+            it('400 on additional keys', () => {
+                return request  
+                    .patch('/api/articles/1/comments/2')
+                    .send({batman: 1, inc_votes: 1})
+                    .expect(400)
+                    .then(({body: {msg}}) => {
+                        expect(msg).to.equal('bad request')
+                    })
+            });
+        });   
     });
 });
