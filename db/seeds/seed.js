@@ -21,5 +21,4 @@ exports.seed = function(knex, Promise) {
           return knex('comments').insert(formattedComments);
         });
     })
-
 };

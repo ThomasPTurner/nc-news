@@ -1,6 +1,6 @@
 const { connection } = require('../connection')
 
-exports.createComment = ({params:{id: article_id}, body:{username: author, body}}) => {
+exports.createComment = ({params:{id: article_id}, body:{username: author, body, topic}}) => {
     return connection('comments')
         .insert({ article_id, author, body})
         .where({article_id})
@@ -8,6 +8,7 @@ exports.createComment = ({params:{id: article_id}, body:{username: author, body}
 }
 
 exports.fetchComments = ({params: {id: article_id}, query: {sort_by, order}}) => {
+    if (!(['asc', 'desc', undefined]).includes(order)) return Promise.reject({code: 400, msg: 'bad request'})
     return connection('comments')
         .select('*')
         .where({article_id})
@@ -17,8 +18,7 @@ exports.fetchComments = ({params: {id: article_id}, query: {sort_by, order}}) =>
             else {
                 query.orderBy(sort_by || order || 'asc')
             }
-        })
-        
+        }) 
 }
 
 exports.updateComment = ({params:{ id: article_id, comment_id }, body:{ inc_votes, ...rest}}) => {

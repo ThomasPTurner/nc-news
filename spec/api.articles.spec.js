@@ -5,7 +5,7 @@ const request = require('supertest')(app);
 const {connection} = require('../connection');
 
 
-describe.skip('api/articles', () => {
+describe('api/articles', () => {
     beforeEach(() => {
         return connection.seed.run();
     });
@@ -35,6 +35,68 @@ describe.skip('api/articles', () => {
                     );
                 });
         });
+        it('articles are sorted by votes by default', () => {
+            return request
+                .get('/api/articles/')
+                .expect(200)
+                .then(({body: {articles}})=> {
+                    expect(articles).to.be.descendingBy('votes')
+                })
+        });
+        it('articles can be sorted by query', () => {
+            return request
+                .get('/api/articles/?sort_by=author')
+                .expect(200)
+                .then(({body: {articles}})=> {
+                    expect(articles).to.be.ascendingBy('author')
+                })
+        });
+        it('400 on bad sort query', () => {
+            return request
+                .get('/api/articles/?sort_by=batman')
+                .expect(400)
+                .then(({body: {msg}})=> {
+                    expect(msg).to.equal('bad request')
+                })
+        });
+        it('articles ordered query', () => {
+            return request
+                .get('/api/articles/?order=asc')
+                .expect(200)
+                .then(({body: {articles}})=> {
+                    expect(articles).to.be.ascendingBy('votes')
+                })
+        });
+        it('400 on bad orders query', () => {
+            return request
+                .get('/api/articles/?order=batman')
+                .expect(400)
+                .then(({body: {msg}})=> {
+                    expect(msg).to.equal('bad request')
+                })
+        });
+        it('query of author to restrict results',() => {
+            return request 
+                .get('/api/articles/?author=icellusedkars')
+                .expect(200)
+                .then(({body: {articles}})=>{
+                    const checkAuthor = articles.every(({author})=> {
+                        return (author === 'icellusedkars')
+                    })
+                    expect(checkAuthor).to.be.true
+                })
+        })
+        it('query of topics to restrict results',() => {
+            return request 
+                .get('/api/articles/?topic=cats')
+                .expect(200)
+                .then(({body: {articles}})=>{
+                    const checkTopics = articles.every(({topic})=> {
+                        return (topic === 'cats')
+                    })
+                    expect(checkTopics).to.be.true
+                })
+        })
         describe('GET by article ID', () => {
             it('retrives a single article with the correct keys', () => {
                 return request

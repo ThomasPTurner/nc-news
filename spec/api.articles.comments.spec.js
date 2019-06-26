@@ -86,6 +86,22 @@ describe('api/comments', () => {
                     expect(msg).to.equal('bad request')
                 })
         });
+        it('comments ordered query', () => {
+            return request
+                .get('/api/articles/1/comments/?order=asc')
+                .expect(200)
+                .then(({body: {comments}})=> {
+                    expect(comments).to.be.ascendingBy('votes')
+                })
+        });
+        it('400 on bad orders query', () => {
+            return request
+                .get('/api/articles/1/comments/?order=batman')
+                .expect(400)
+                .then(({body: {msg}})=> {
+                    expect(msg).to.equal('bad request')
+                })
+        });
         it('404 when requesting from an invalid article', () => {
             return request
                 .get('/api/articles/9001/comments/')
