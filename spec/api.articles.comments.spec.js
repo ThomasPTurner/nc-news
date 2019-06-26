@@ -14,6 +14,14 @@ describe('api/comments', () => {
             return request 
                 .delete('/api/articles/1/comments/2')
                 .expect(204)
+                .then( () => {
+                    return connection('comments')
+                        .select('*')
+                        .where({id: 2})
+                })
+                .then(comment => {
+                    expect(comment.length).to.equal(0)
+                })
         });
     });
     describe('GET', () => {

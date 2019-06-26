@@ -1,4 +1,4 @@
-const { createComment, fetchComments, updateComment } = require('../models')
+const { createComment, fetchComments, updateComment, removeComment } = require('../models')
 
 exports.postComment = (req, res, next) => {
     createComment(req)
@@ -24,4 +24,11 @@ exports.patchComment = (req, res, next) => {
             res.status(200).send({comment})
         })
         .catch(next)  
+}
+
+exports.deleteComment = (req, res, next) => {
+    removeComment(req)
+        .then(()=> {
+            res.status(204).send()
+        })
 }

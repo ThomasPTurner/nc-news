@@ -19,7 +19,12 @@ exports.updateComment = ({params:{ id, comment_id }, body:{ inc_votes, ...rest}}
     }
     return connection('comments')
         .increment({votes: inc_votes})
-        .where({article_id: id})
-        .andWhere({id: comment_id})
+        .where({article_id: id, id: comment_id})
         .returning('*')
+}
+
+exports.removeComment = ({params: {id, comment_id}}) => {
+    return connection('comments')
+        .where({article_id: id, id: comment_id})
+        .delete()
 }
