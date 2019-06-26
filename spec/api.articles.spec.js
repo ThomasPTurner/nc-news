@@ -100,6 +100,15 @@ describe('api/articles', () => {
                     expect(votes).to.equal(99)
                 })
         });
+        it('allows votes to be negative', () => {
+            return request  
+                .patch('/api/articles/1')
+                .send({inc_votes: -101})
+                .expect(200)
+                .then(({ body: { article: { votes }}}) => {
+                    expect(votes).to.equal(-1)
+                })
+        });
         it('400 on bad value', () => {
             return request  
                 .patch('/api/articles/1')

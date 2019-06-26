@@ -6,3 +6,9 @@ exports.createComment = ({id}, {username, body}) => {
         .where({article_id: id})
         .returning('*')
 }
+
+exports.fetchComments = (id) => {
+    return connection('comments')
+        .select('*')
+        .where({article_id: id})
+}
