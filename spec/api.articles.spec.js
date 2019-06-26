@@ -97,6 +97,18 @@ describe('api/articles', () => {
                     expect(checkTopics).to.be.true
                 })
         })
+        it("multiple queries doesn't break it", () => {
+            return request
+                .get('/api/articles/?sort_by=id&order=desc&topic=mitch&author=icellusedkars')
+                .expect(200)
+                .then(({body: {articles}})=>{
+                    const checkValues = articles.every( ({topic, author}) => {
+                        return (topic === 'mitch' && author === 'icellusedkars')
+                    })
+                    expect(checkValues).to.be.true;
+                    expect(articles).to.be.descendingBy('id');
+                })
+        })
         describe('GET by article ID', () => {
             it('retrives a single article with the correct keys', () => {
                 return request

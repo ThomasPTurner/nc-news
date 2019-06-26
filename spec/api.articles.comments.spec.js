@@ -110,7 +110,6 @@ describe('api/comments', () => {
                     expect(msg).to.equal('dependant resource not found');
                 });
         });
-        
     });
     describe('POST', () => {
         it('posts a comment', () => {

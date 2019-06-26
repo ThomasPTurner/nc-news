@@ -1,4 +1,4 @@
-const { fetchArticles, fetchArticleById, changeArticle }  = require('../models')
+const { fetchArticles, changeArticle }  = require('../models')
 
 exports.getArticles = (req, res, next) => {
     return fetchArticles(req)
@@ -7,6 +7,7 @@ exports.getArticles = (req, res, next) => {
         })
         .catch(next)
 }
+
 exports.getArticleById = (req, res, next)=>{
     return fetchArticles(req)
         .then(([article]) => {
@@ -15,11 +16,12 @@ exports.getArticleById = (req, res, next)=>{
         })
         .catch(next);
 }
+
 exports.patchArticle = (req, res, next) => {
     return changeArticle(req)
     .then(([article])=>{
         if (!article) return Promise.reject({code: 404, msg: 'article not found'})
         res.status(200).send({article})
     })
-    .catch(next)
+    .catch(next);
 };

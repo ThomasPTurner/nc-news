@@ -1,6 +1,6 @@
 const { connection } = require('../connection')
 
-exports.createComment = ({params:{id: article_id}, body:{username: author, body, topic}}) => {
+exports.createComment = ({params:{id: article_id}, body:{username: author, body}}) => {
     return connection('comments')
         .insert({ article_id, author, body})
         .where({article_id})

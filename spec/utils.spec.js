@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test'
 const { expect } = require('chai');
 const { formatDate, makeRefObj, formatComments } = require('../db/utils/utils');
 
-describe.skip('formatDate', () => {
+describe('formatDate', () => {
     it('handles an empty array', () => {
         expect(formatDate([])).to.eql([]);
     });

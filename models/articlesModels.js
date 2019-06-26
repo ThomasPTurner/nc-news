@@ -16,7 +16,7 @@ exports.fetchArticles = ({params :{id}, query: {sort_by, order, author, topic}})
             if (!sort_by)
                 query.orderBy('votes', order || 'desc') //only votes should default to decending
             else {
-                query.orderBy(sort_by || order || 'asc')
+                query.orderBy(sort_by, order || 'asc')
             }
         })
 }
