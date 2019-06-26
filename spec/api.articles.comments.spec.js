@@ -15,9 +15,18 @@ describe('api/topics', () => {
                 .post('/api/articles/1/comments/')
                 .send({username: 'fred', body: 'girl, look at that body'})
                 .expect(200)
-                // .then(( {body: {comment: {body}}} ) => {
-                //     expect(body).to.equal('girl, look at that body');
-                // });
+                .then(( {body: {comment: {body}}} ) => {
+                    expect(body).to.equal('girl, look at that body');
+                });
+        });
+        it('400 when posting to an invalid article', () => {
+            return request
+                .post('/api/articles/9001/comments/')
+                .send({username: 'fred', body: 'girl, look at that body'})
+                .expect(400)
+                .then((  {body: {msg}} ) => {
+                    expect(msg).to.equal('dependant resource not found');
+                });
         });
     });
 });

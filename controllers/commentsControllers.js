@@ -1,4 +1,9 @@
-exports.postComment = (req, res, next) => {
-    console.log(req.params)
-    return res.status(200).send()
+const { createComment } = require('../models')
+
+exports.postComment = ({params, body}, res, next) => {
+    createComment(params, body)
+        .then( ([comment]) => {
+            res.status(200).send({comment})
+        })
+        .catch(next)
 }
