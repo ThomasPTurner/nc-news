@@ -10,7 +10,8 @@ exports.handlePGerrors = (err, req, res, next) => {
     const errRefObj = {
         ['22P02']: {code: 400, msg: 'bad request'},
         ['23503']: {code: 404, msg: 'dependant resource not found'},
-        ['22001']: {code: 400, msg: 'bad input'}
+        ['22001']: {code: 400, msg: 'bad input'},
+        ['42703']: {code: 400, msg: 'bad request'}
     }
     if (errRefObj[err.code]) {
         res.status(errRefObj[err.code].code).send(errRefObj[err.code])

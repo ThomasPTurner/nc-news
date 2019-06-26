@@ -8,8 +8,8 @@ exports.postComment = (req, res, next) => {
         .catch(next)
 }
 
-exports.getComments = ({params: {id}}, res, next) => {
-    fetchComments(id)
+exports.getComments = (req, res, next) => {
+    fetchComments(req)
         .then(comments => {
             if (!comments.length) return Promise.reject({code:404, msg: 'dependant resource not found'})
             res.status(200).send({comments})

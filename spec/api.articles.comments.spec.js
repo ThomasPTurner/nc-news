@@ -1,8 +1,10 @@
 process.env.NODE_ENC = 'test';
-const { expect } = require('chai');
+const chai = require('chai');
+const {expect} = chai
 const app = require('../app');
 const request = require('supertest')(app);
 const {connection} = require('../connection');
+chai.use(require('chai-sorted'))
 
 
 describe('api/comments', () => {
@@ -58,6 +60,30 @@ describe('api/comments', () => {
                         return (article_id === 1)
                     })
                     expect(checkIds).to.be.true
+                })
+        });
+        it('comments are sorted by votes by default', () => {
+            return request
+                .get('/api/articles/1/comments/')
+                .expect(200)
+                .then(({body: {comments}})=> {
+                    expect(comments).to.be.descendingBy('votes')
+                })
+        });
+        it('comments can be sorted by query', () => {
+            return request
+                .get('/api/articles/1/comments/?sort_by=author')
+                .expect(200)
+                .then(({body: {comments}})=> {
+                    expect(comments).to.be.ascendingBy('author')
+                })
+        });
+        it('400 on bad sort query', () => {
+            return request
+                .get('/api/articles/1/comments/?sort_by=batman')
+                .expect(400)
+                .then(({body: {msg}})=> {
+                    expect(msg).to.equal('bad request')
                 })
         });
         it('404 when requesting from an invalid article', () => {
