@@ -2,7 +2,7 @@ process.env.NODE_ENV = 'test'
 const { expect } = require('chai');
 const { formatDate, makeRefObj, formatComments } = require('../db/utils/utils');
 
-describe('formatDate', () => {
+describe.skip('formatDate', () => {
     it('handles an empty array', () => {
         expect(formatDate([])).to.eql([]);
     });
@@ -27,7 +27,7 @@ describe('formatDate', () => {
         expect(result[0].b).to.equal('Hello');
     });
 });
-describe('makeRefObj', () => {
+describe.skip('makeRefObj', () => {
     it('returns an empty object, when passed an empty array', () => {
       const input = [];
       const actual = makeRefObj(input);
@@ -47,7 +47,7 @@ describe('makeRefObj', () => {
       expect(actual).to.eql(expected);
     });
   });
-describe('formatComments', () => {
+describe.skip('formatComments', () => {
     it('throws back an empty array', () => {
         expect(formatComments([],{})).to.eql([])
     })

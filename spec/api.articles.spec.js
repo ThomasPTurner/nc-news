@@ -10,22 +10,38 @@ describe('api/articles', () => {
         return connection.seed.run();
     });
     describe('GET', () => {
-        // it('gets a list of articles', () => {
-        //     return request
-        //         .get('/api/articles/')
-        //         .expect(200)
-        //         .then(( {body: {articles}} ) => {
-        //             expect(articles.length).to.equal(12);
-        //         });
-        // });
+        it('gets a list of articles', () => {
+            return request
+                .get('/api/articles/')
+                .expect(200)
+                .then(( {body: {articles}} ) => {
+                    expect(articles.length).to.be.greaterThan(1);
+                });
+        });
+        it('articles have correct keys', () => {
+            return request
+                .get('/api/articles/')
+                .expect(200)
+                .then(({body: {articles: [article]}}) => {
+                    expect(article).to.have.keys(
+                        'author',
+                        'title',
+                        'id',
+                        'body',
+                        'topic',
+                        'created_at',
+                        'votes',
+                        'comment_count'
+                    );
+                });
+        });
         describe('GET by article ID', () => {
             it('retrives a single article with the correct keys', () => {
                 return request
                     .get('/api/articles/1')
                     .expect(200)
                     .then(({body: {article}}) => {
-                        const keys = Object.keys(article)
-                        expect(keys).to.eql([
+                        expect(article).to.have.keys(
                             'author',
                             'title',
                             'id',
@@ -34,7 +50,7 @@ describe('api/articles', () => {
                             'created_at',
                             'votes',
                             'comment_count'
-                        ]);
+                        );
                         expect(article.id).to.equal(1)
                     });
             });
@@ -65,13 +81,23 @@ describe('api/articles', () => {
         });
     });
     describe('PATCH', () => {
-        it('updates votes', () => {
+        it('updates votes, responds with updated article', () => {
             return request  
                 .patch('/api/articles/1')
                 .send({inc_votes: 1})
                 .expect(200)
-                .then(({body: {votes}}) => {
+                .then(({ body: { article: { id, votes }}}) => {
+                    expect(id).to.equal(1)
                     expect(votes).to.equal(101)
+                })
+        });
+        it('allows negative votes', () => {
+            return request  
+                .patch('/api/articles/1')
+                .send({inc_votes: -1})
+                .expect(200)
+                .then(({ body: { article: { votes }}}) => {
+                    expect(votes).to.equal(99)
                 })
         });
         it('400 on bad value', () => {

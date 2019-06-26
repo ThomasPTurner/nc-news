@@ -1,25 +1,14 @@
 const { connection } = require('../connection')
 
-exports.fetchArticles = () => {
+exports.fetchArticles = (id) => {
     return connection('articles')
-        .select('*')
-}
-
-exports.fetchArticleById = (id) => {
-    return connection('articles')
-        .select(
-            `articles.author`,
-            `articles.title`,
-            `articles.id`,
-            `articles.body`,
-            `articles.topic`,
-            `articles.created_at`,
-            `articles.votes`
-        )
-        .countDistinct('comments.id AS comment_count')
-        .join('comments','articles.id','=','comments.article_id')
+        .select('articles.*')
+        .count('comments.id AS comment_count')
+        .leftJoin('comments','articles.id','=','comments.article_id')
         .groupBy('articles.id')
-        .where({['articles.id']: id})
+        .modify(query => {
+            if (id) query.where({['articles.id']: id})
+        })
 }
 
 exports.changeArticle = (id, {inc_votes, ...rest}) => {
@@ -30,5 +19,5 @@ exports.changeArticle = (id, {inc_votes, ...rest}) => {
     .select('*')
     .where({id})
     .increment('votes', inc_votes)
-    .returning('votes')
+    .returning('*')
 }

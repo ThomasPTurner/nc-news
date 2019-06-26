@@ -8,7 +8,7 @@ exports.getArticles = (req, res, next) => {
         .catch(next)
 }
 exports.getArticleById = ({params: { id }}, res, next)=>{
-    return fetchArticleById(id)
+    return fetchArticles(id)
         .then(([article]) => {
             if (!article) return Promise.reject({code: 404, msg: 'article not found'})
             res.status(200).send({article});
@@ -17,9 +17,9 @@ exports.getArticleById = ({params: { id }}, res, next)=>{
 }
 exports.patchArticle = ({body, params: { id }}, res, next) => {
     return changeArticle(id, body)
-    .then(([votes])=>{
-        if (!votes) return Promise.reject({code: 404, msg: 'article not found'})
-        res.status(200).send({votes})
+    .then(([article])=>{
+        if (!article) return Promise.reject({code: 404, msg: 'article not found'})
+        res.status(200).send({article})
     })
     .catch(next)
 };
