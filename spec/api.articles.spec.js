@@ -201,7 +201,7 @@ describe('api/articles', () => {
                     .patch('/api/articles/1')
                     .send({inc_votes: 1})
                     .expect(200)
-                    .then(({ body: { article }}) => {
+                    .then(({ body: { article}}) => {
                         expect(article.id).to.equal(1)
                         expect(article.votes).to.equal(101)
                         expect(article).to.have.keys(

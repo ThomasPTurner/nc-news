@@ -2,8 +2,6 @@ const {data: {topicData, articleData, commentData, userData}}  = require('../ind
 
 const { formatDate, formatComments, makeRefObj } = require('../utils/utils');
 
-console.log(require('../index'))
-
 exports.seed = function(knex, Promise) {
   return knex.migrate.rollback()
     .then(() => {
