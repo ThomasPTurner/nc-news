@@ -9,6 +9,28 @@ describe('api/topics', () => {
     beforeEach(() => {
         return connection.seed.run();
     });
+    describe('invalid methods caught', () => {
+        it('PUT', () => {
+            return request
+                .put('/api/topics')
+                .expect(405)
+        });
+        it('DELETE', () => {
+            return request
+                .delete('/api/topics')
+                .expect(405)
+        });
+        it('POST', () => {
+            return request
+                .post('/api/topics')
+                .expect(405)
+        });
+        it('DELETE', () => {
+            return request
+                .delete('/api/topics')
+                .expect(405)
+        });
+    });
     describe('GET', () => {
         it('gets a list of topics', () => {
             return request
