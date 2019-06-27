@@ -109,10 +109,10 @@ describe('api/comments', () => {
         it('posts a comment, return posted comment', () => {
             return request
                 .post('/api/articles/1/comments/')
-                .send({username: 'fred', body: 'girl, look at that body'})
+                .send({username: 'fred', body: 'look at that body'})
                 .expect(201)
                 .then(( {body: {comment}} ) => {
-                    expect(comment.body).to.equal('girl, look at that body');
+                    expect(comment.body).to.equal('look at that body');
                     expect(comment).to.have.keys(
                         'id',
                         'author',
@@ -126,7 +126,7 @@ describe('api/comments', () => {
         it('404 when posting to an invalid article', () => {
             return request
                 .post('/api/articles/9001/comments/')
-                .send({username: 'fred', body: 'girl, look at that body'})
+                .send({username: 'fred', body: 'look at that body'})
                 .expect(404)
                 .then(({body: {msg}}) => {
                     expect(msg).to.equal('dependant resource not found');
@@ -135,7 +135,7 @@ describe('api/comments', () => {
         it('404 when not given a user that exists', () => {
             return request
             .post('/api/articles/1/comments/')
-            .send({username: 'batman', body: 'girl, look at that body'})
+            .send({username: 'batman', body: 'look at that body'})
             .expect(404)
             .then(({body: {msg}}) => {
                 expect(msg).to.equal('dependant resource not found');
