@@ -9,6 +9,28 @@ describe('api/articles', () => {
     beforeEach(() => {
         return connection.seed.run();
     });
+    describe('invalid methods caught', () => {
+        it('PUT', () => {
+            return request
+                .put('/api/articles/')
+                .expect(405)
+        });
+        it('DELETE', () => {
+            return request
+                .delete('/api/articles/')
+                .expect(405)
+        });
+        it('POST', () => {
+            return request
+                .post('/api/articles/')
+                .expect(405)
+        });
+        it('PATCH', () => {
+            return request
+                .patch('/api/articles/')
+                .expect(405)
+        });
+    });
     describe('GET', () => {
         it('gets a list of articles', () => {
             return request
@@ -112,6 +134,23 @@ describe('api/articles', () => {
         
     });
     describe('api/article/:id', () => {
+        describe('invalid methods caught', () => {
+            it('PUT', () => {
+                return request
+                    .put('/api/articles/1')
+                    .expect(405)
+            });
+            it('DELETE', () => {
+                return request
+                    .delete('/api/articles/1')
+                    .expect(405)
+            });
+            it('POST', () => {
+                return request
+                    .post('/api/articles/1')
+                    .expect(405)
+            });
+        });
         describe('GET', () => {
             it('retrives a single article with the correct keys', () => {
                 return request

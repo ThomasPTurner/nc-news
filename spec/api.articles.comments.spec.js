@@ -11,7 +11,7 @@ describe('api/comments', () => {
     beforeEach(() => {
         return connection.seed.run();
     });
-    describe.only('invalid methods caught', () => {
+    describe('invalid methods caught', () => {
         it('PUT', () => {
             return request
                 .put('/api/articles/1/comments')
@@ -136,7 +136,7 @@ describe('api/comments', () => {
         });
     });
     describe('api/articles/:id/comments/:id', () => {
-        describe.only('invalid methods caught', () => {
+        describe('invalid methods caught', () => {
             it('PUT', () => {
                 return request
                     .put('/api/articles/1/comments/2')

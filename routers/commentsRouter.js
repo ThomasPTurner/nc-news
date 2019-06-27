@@ -17,5 +17,4 @@ commentsRouter.route('/:comment_id')
     .put(badMethod)
     .get(badMethod)
 
-
 module.exports =  commentsRouter;
