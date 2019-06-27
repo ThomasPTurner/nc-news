@@ -1,6 +1,6 @@
 const { connection } = require('../connection')
 
-exports.fetchArticles = ({params :{id}, query: {sort_by, order, author, topic}}) => {
+exports.fetchArticles = ({id},{sort_by, order, author, topic}) => {
     if (!(['asc', 'desc', undefined]).includes(order)) return Promise.reject({code: 400, msg: 'bad request'})
     return connection('articles')
         .select('articles.*')
@@ -12,16 +12,11 @@ exports.fetchArticles = ({params :{id}, query: {sort_by, order, author, topic}})
             if (author) query.where({['articles.author']: author})
             if (topic) query.where({['articles.topic']: topic})
         })
-        .modify((query) => {
-            if (!sort_by)
-                query.orderBy('votes', order || 'desc') //only votes should default to decending
-            else {
-                query.orderBy(sort_by, order || 'asc')
-            }
-        })
+        .orderBy(sort_by || 'created_at', order || 'desc')
 }
 
-exports.changeArticle = ({params: {id}, body: {inc_votes, ...rest}}) => {
+exports.changeArticle = ({id}, {inc_votes, ...rest}) => {
+    console.log(id, inc_votes)
     if (Object.keys(rest).length || !inc_votes) { // validate object
         return Promise.reject({code: 400, msg: 'bad request'})
     }

@@ -1,15 +1,15 @@
 const { fetchArticles, changeArticle }  = require('../models')
 
-const getArticles = (req, res, next) => {
-    return fetchArticles(req)
+const getArticles = ({params, query}, res, next) => {
+    return fetchArticles(params, query)
         .then((articles)=>{
             res.status(200).send({articles})
         })
         .catch(next)
 }
 
-const getArticleById = (req, res, next)=>{
-    return fetchArticles(req)
+const getArticleById = ({params, query}, res, next)=>{
+    return fetchArticles(params, query)
         .then(([article]) => {
             if (!article) return Promise.reject({code: 404, msg: 'article not found'})
             res.status(200).send({article});
@@ -17,11 +17,11 @@ const getArticleById = (req, res, next)=>{
         .catch(next);
 }
 
-const patchArticle = (req, res, next) => {
-    return changeArticle(req)
+const patchArticle = ({params, body, query}, res, next) => {
+    return changeArticle(params, body)
     .then(([article])=>{
         if (!article) return Promise.reject({code: 404, msg: 'article not found'})
-        else return getArticleById(req, res, next)
+        else return getArticleById({params, query}, res, next)
     })
     .catch(next);
 };

@@ -57,12 +57,12 @@ describe('api/articles', () => {
                     );
                 });
         });
-        it('articles are sorted by votes by default', () => {
+        it('articles are sorted by descending created_at by default', () => {
             return request
                 .get('/api/articles/')
                 .expect(200)
                 .then(({body: {articles}})=> {
-                    expect(articles).to.be.descendingBy('votes')
+                    expect(articles).to.be.descendingBy('created_at')
                 })
         });
         it('articles can be sorted by query', () => {
@@ -70,7 +70,7 @@ describe('api/articles', () => {
                 .get('/api/articles/?sort_by=author')
                 .expect(200)
                 .then(({body: {articles}})=> {
-                    expect(articles).to.be.ascendingBy('author')
+                    expect(articles).to.be.descendingBy('author')
                 })
         });
         it('400 on bad sort query', () => {

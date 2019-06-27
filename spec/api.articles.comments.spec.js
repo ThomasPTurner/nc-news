@@ -56,12 +56,12 @@ describe('api/comments', () => {
                     expect(checkIds).to.be.true
                 })
         });
-        it('comments are sorted by votes by default', () => {
+        it('comments are sorted by created_on by default', () => {
             return request
                 .get('/api/articles/1/comments/')
                 .expect(200)
                 .then(({body: {comments}})=> {
-                    expect(comments).to.be.descendingBy('votes')
+                    expect(comments).to.be.descendingBy('created_at')
                 })
         });
         it('comments can be sorted by query', () => {
@@ -69,7 +69,7 @@ describe('api/comments', () => {
                 .get('/api/articles/1/comments/?sort_by=author')
                 .expect(200)
                 .then(({body: {comments}})=> {
-                    expect(comments).to.be.ascendingBy('author')
+                    expect(comments).to.be.descendingBy('author')
                 })
         });
         it('400 on bad sort query', () => {
@@ -85,7 +85,7 @@ describe('api/comments', () => {
                 .get('/api/articles/1/comments/?order=asc')
                 .expect(200)
                 .then(({body: {comments}})=> {
-                    expect(comments).to.be.ascendingBy('votes')
+                    expect(comments).to.be.ascendingBy('created_at')
                 })
         });
         it('400 on bad orders query', () => {
@@ -106,7 +106,7 @@ describe('api/comments', () => {
         });
     });
     describe('POST', () => {
-        it('posts a comment, return posted comment', () => {
+        it('posts a comment', () => {
             return request
                 .post('/api/articles/1/comments/')
                 .send({username: 'fred', body: 'look at that body'})
@@ -193,7 +193,7 @@ describe('api/comments', () => {
             });
             it('404 on bad comment', () => {
                 return request 
-                    .delete('/api/articles/1/comments/4002')
+                    .delete('/api/articles/9001/comments/2')
                     .expect(404)
                     .then( ({body: {msg}}) => {
                       expect(msg).to.equal('not found')
@@ -201,7 +201,7 @@ describe('api/comments', () => {
             });
         });
         describe('PATCH', () => {
-            it('increments the vote on a comment, returns new comment', () => {
+            it('increments the vote on a comment', () => {
                 return request
                 .patch('/api/articles/1/comments/2')
                 .send({inc_votes: 1})

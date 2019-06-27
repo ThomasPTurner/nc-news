@@ -1,15 +1,15 @@
 const { createComment, fetchComments, updateComment, removeComment } = require('../models')
 
-exports.postComment = (req, res, next) => {
-    createComment(req)
+exports.postComment = ({params, query, body}, res, next) => {
+    createComment(params, body)
         .then( ([comment]) => {
             res.status(201).send({comment})
         })
         .catch(next)
 }
 
-exports.getComments = (req, res, next) => {
-    fetchComments(req)
+exports.getComments = ({params, query}, res, next) => {
+    fetchComments(params, query)
         .then(comments => {
             if (!comments.length) return Promise.reject({code:404, msg: 'dependant resource not found'})
             res.status(200).send({comments})
@@ -17,8 +17,8 @@ exports.getComments = (req, res, next) => {
         .catch(next)
 }
 
-exports.patchComment = (req, res, next) => {
-    updateComment(req)
+exports.patchComment = ({params, query, body}, res, next) => {
+    updateComment(params, body)
         .then(([comment]) => {
             if (!comment) return Promise.reject({code:404, msg: 'not found'})
             res.status(200).send({comment})
@@ -26,8 +26,8 @@ exports.patchComment = (req, res, next) => {
         .catch(next)  
 }
 
-exports.deleteComment = (req, res, next) => {
-    removeComment(req)
+exports.deleteComment = ({params}, res, next) => {
+    removeComment(params)
         .then(([comment])=> {
             if (!comment) return Promise.reject({code:404, msg: 'not found'})
             res.status(204).send()
