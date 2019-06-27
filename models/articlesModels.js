@@ -26,7 +26,10 @@ exports.changeArticle = ({params: {id}, body: {inc_votes, ...rest}}) => {
         return Promise.reject({code: 400, msg: 'bad request'})
     }
     return connection('articles')
-    .select('*')
+    .select('articles.*')
+    .count('comments.id AS comment_count')
+    .leftJoin('comments','articles.id','=','comments.article_id')
+    .groupBy('articles.id')
     .where({id})
     .increment('votes', inc_votes)
     .returning('*')

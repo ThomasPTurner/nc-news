@@ -38,6 +38,7 @@ describe('api/topics', () => {
                 .expect(200)
                 .then(( {body: {topics}} ) => {
                     expect(topics.length).to.equal(3);
+                    expect(topics[0]).to.have.keys('slug', 'description')
                 });
         });
     });

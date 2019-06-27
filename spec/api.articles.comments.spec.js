@@ -35,6 +35,14 @@ describe('api/comments', () => {
                 .expect(200)
                 .then(({body: {comments}})=>{
                     expect(comments.length).to.be.greaterThan(1)
+                    expect(comments[0]).to.have.keys(
+                        'id',
+                        'author',
+                        'article_id',
+                        'votes',
+                        'created_at',
+                        'body'
+                    );
                 })
         });
         it('comments are for a specific article', () => {
@@ -98,13 +106,21 @@ describe('api/comments', () => {
         });
     });
     describe('POST', () => {
-        it('posts a comment', () => {
+        it('posts a comment, return posted comment', () => {
             return request
                 .post('/api/articles/1/comments/')
                 .send({username: 'fred', body: 'girl, look at that body'})
                 .expect(201)
-                .then(( {body: {comment: {body}}} ) => {
-                    expect(body).to.equal('girl, look at that body');
+                .then(( {body: {comment}} ) => {
+                    expect(comment.body).to.equal('girl, look at that body');
+                    expect(comment).to.have.keys(
+                        'id',
+                        'author',
+                        'article_id',
+                        'votes',
+                        'created_at',
+                        'body'
+                    );
                 });
         });
         it('404 when posting to an invalid article', () => {
@@ -185,14 +201,22 @@ describe('api/comments', () => {
             });
         });
         describe('PATCH', () => {
-            it('increments the vote on a comment', () => {
+            it('increments the vote on a comment, returns new comment', () => {
                 return request
                 .patch('/api/articles/1/comments/2')
                 .send({inc_votes: 1})
                 .expect(200)
-                .then(({body: {comment: {votes, id}}}) => {
-                    expect(votes).to.equal(15);
-                    expect(id).to.equal(2);
+                .then(({body: {comment}}) => {
+                    expect(comment.votes).to.equal(15);
+                    expect(comment.id).to.equal(2);
+                    expect(comment).to.have.keys(
+                        'id',
+                        'author',
+                        'article_id',
+                        'votes',
+                        'created_at',
+                        'body'
+                    );
                 })
             })
             it('404 on a non existant article', () => {

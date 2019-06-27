@@ -38,6 +38,7 @@ describe('api/users', () => {
                 .expect(200)
                 .then(( {body: {users}} ) => {
                     expect(users.length).to.equal(5);
+                    expect(users[0]).to.have.keys('username', 'avatar_url', 'name')
                 });
         });
     });
@@ -69,8 +70,9 @@ describe('api/users', () => {
                 return request
                     .get('/api/users/fred')
                     .expect(200)
-                    .then(( {body: {user: {username}}} ) => {
-                        expect(username).to.equal('fred');
+                    .then(({body: {user}}) => {
+                        expect(user.username).to.equal('fred');
+                        expect(user).to.have.keys('username', 'avatar_url', 'name');
                     });
             });
             it('404 on valid but absent id', ()=> {

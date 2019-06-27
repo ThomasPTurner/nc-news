@@ -195,15 +195,26 @@ describe('api/articles', () => {
                     });
             });
         });
-        describe('PATCH', () => {
+        describe.only('PATCH', () => {
             it('updates votes, responds with updated article', () => {
                 return request  
                     .patch('/api/articles/1')
                     .send({inc_votes: 1})
                     .expect(200)
-                    .then(({ body: { article: { id, votes }}}) => {
-                        expect(id).to.equal(1)
-                        expect(votes).to.equal(101)
+                    .then(({ body: { article}}) => {
+                        console.log(article)
+                        expect(article.id).to.equal(1)
+                        expect(article.votes).to.equal(101)
+                        expect(article).to.have.keys(
+                            'author',
+                            'title',
+                            'id',
+                            'body',
+                            'topic',
+                            'created_at',
+                            'votes',
+                            'comment_count'
+                        );
                     })
             });
             it('allows negative votes', () => {
