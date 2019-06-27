@@ -1,6 +1,6 @@
 const app = require('./app')
 //check for this process key.
-const PORT = process.port || 9001
+const { PORT = 9090 } = process.env
 app.listen(PORT, ()=> {
-    console.log('i am listening. Honest.')
+    console.log(`i am listening. Honest. Port ${PORT}`)
 })
