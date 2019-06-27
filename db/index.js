@@ -1,3 +1,5 @@
 const ENV = process.env.NODE_ENV || 'development'
-const data = { test, development, production: development };
-exports.data = require(`./${ENV}-data/`)
+let data = ENV
+if (ENV === 'production') data = 'development'
+console.log(`./${data}-data/`)
+exports.data = require(`./${data}-data/`)

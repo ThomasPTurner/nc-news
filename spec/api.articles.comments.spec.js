@@ -193,7 +193,7 @@ describe('api/comments', () => {
             });
             it('404 on bad comment', () => {
                 return request 
-                    .delete('/api/articles/9001/comments/2')
+                    .delete('/api/articles/1/comments/4002')
                     .expect(404)
                     .then( ({body: {msg}}) => {
                       expect(msg).to.equal('not found')
