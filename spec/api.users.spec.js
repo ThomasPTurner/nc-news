@@ -9,8 +9,30 @@ describe('api/users', () => {
     beforeEach(() => {
         return connection.seed.run();
     });
-    describe('GET all', () => {
-        it('gets a list of users', () => {
+    describe('GET', () => {
+        describe('invalid methods caught', () => {
+            it('PUT', () => {
+                return request
+                    .put('/api/users')
+                    .expect(405)
+            });
+            it('DELETE', () => {
+                return request
+                    .delete('/api/users')
+                    .expect(405)
+            });
+            it('POST', () => {
+                return request
+                    .post('/api/users')
+                    .expect(405)
+            });
+            it('DELETE', () => {
+                return request
+                    .delete('/api/users')
+                    .expect(405)
+            });
+        });
+        it('GET', () => {
             return request
                 .get('/api/users/')
                 .expect(200)
@@ -18,7 +40,31 @@ describe('api/users', () => {
                     expect(users.length).to.equal(5);
                 });
         });
-        describe('GET by user ID', () => {
+    });
+    describe('api/users/:id', () => {
+        describe('invalid methods caught', () => {
+            it('PUT', () => {
+                return request
+                    .put('/api/users/1')
+                    .expect(405)
+            });
+            it('DELETE', () => {
+                return request
+                    .delete('/api/users/1')
+                    .expect(405)
+            });
+            it('POST', () => {
+                return request
+                    .post('/api/users/1')
+                    .expect(405)
+            });
+            it('DELETE', () => {
+                return request
+                    .delete('/api/users/1')
+                    .expect(405)
+            });
+        });
+        describe('GET', () => {
             it('retrives a single user', () => {
                 return request
                     .get('/api/users/fred')
