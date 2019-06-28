@@ -69,8 +69,8 @@ This will setup your database connections.
 
 ```
 $ npm i
-$ npm setup-dbs
-$ npm seed:dev
+$ npx run setup-dbs
+$ npm run seed:dev
 $ npm run dev
 ```
 
@@ -85,8 +85,8 @@ Run the following commands in the project directory:
 
 ```
 $ npm i -D
-$ npm setup-dbs
-$ npm seed:test
+$ npm run setup-dbs
+$ npm run seed:test
 $ npm t
 ```
 
