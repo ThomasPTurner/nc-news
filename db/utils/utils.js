@@ -21,4 +21,10 @@ exports.formatComments = (comments, articleRef) => {
             ...rest
         };
     });
+}
+
+// rejects promise if input is an empty array
+exports.rejectEmptyArr = (arr, errObj = {code: 404, msg: 'not found'}) => {
+    if (arr.length === 0) return Promise.reject(errObj)
+    else return arr
 };

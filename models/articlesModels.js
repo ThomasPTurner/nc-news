@@ -1,12 +1,16 @@
 const { connection } = require('../connection')
+const { rejectEmptyArr } = require('../db/utils/utils')
 
-exports.fetchArticles = ({id},{sort_by, order, author, topic}= {}) => {
+exports.fetchArticles = ({id},{sort_by, order, author, topic, limit= 10, p = 1 }= {}) => {
     if (!(['asc', 'desc', undefined]).includes(order)) return Promise.reject({code: 400, msg: 'bad request'})
+    console.log((p-1)*limit)
     const promiseArticles = connection('articles')
         .select('articles.*')
         .count('comments.article_id AS comment_count')
         .leftJoin('comments','articles.id','=','comments.article_id')
         .groupBy('articles.id')
+        .limit(limit)
+        .offset(limit * (p - 1))
         .modify(query => {
             if (id) query.where({['articles.id']: id})
             if (author) query.where({['articles.author']: author})
@@ -16,20 +20,22 @@ exports.fetchArticles = ({id},{sort_by, order, author, topic}= {}) => {
     
     const promiseArr = [promiseArticles] // build an array of promises so we're not querying when we don't have to
     if (topic)  {
-        const checkTopics = (connection('topics').select('*').where({slug: topic})) // eventually re-factor these into single query, only query once if there's both a topic and an author in the endpoint query.
-        promiseArr.push(checkTopics)
+        const checkTopics = (connection('topics')
+            .select('*')
+            .where({slug: topic}))
+            .then(rejectEmptyArr)
+        promiseArr.unshift(checkTopics)
     }
     if (author) {
-        const checkAuthor = (connection('users').select('*').where({username: author}))
-        promiseArr.push(checkAuthor)
+        const checkAuthor = (connection('users')
+            .select('*')
+            .where({username: author}))
+            .then(rejectEmptyArr)
+        promiseArr.unshift(checkAuthor)
     }
-
     return Promise.all(promiseArr)
         .then((promiseArr) => {
-            if (!promiseArr.slice(1).every(([el])=> el)) { //did any come back empty?
-                return Promise.reject({code: 404, msg: 'not found'})
-            } 
-            return promiseArr[0]
+            return promiseArr[promiseArr.length-1]
         })
 }
 
@@ -38,7 +44,7 @@ exports.changeArticle = ({id}, {inc_votes, ...rest}) => {
         return Promise.reject({code: 400, msg: 'bad request'})
     }
     return connection('articles')
-    .where({['articles.id']: id})
-    .increment({votes: inc_votes || 0})
-    .returning('*')
+        .where({['articles.id']: id})
+        .increment({votes: inc_votes || 0})
+        .returning('*')
 }

@@ -80,7 +80,7 @@ describe('api/users', () => {
                     .get('/api/users/batman')
                     .expect(404)
                     .then(({body: {msg}}) => {
-                        expect(msg).to.equal('user not found')
+                        expect(msg).to.equal('not found')
                     });
             });
             it('404 on invalid id', ()=> {
@@ -88,7 +88,7 @@ describe('api/users', () => {
                     .get('/api/users/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
                     .expect(404)
                     .then(({body: {msg}}) => {
-                        expect(msg).to.equal('user not found')
+                        expect(msg).to.equal('not found')
                     });
             });
         });

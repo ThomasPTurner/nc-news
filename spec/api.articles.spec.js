@@ -31,7 +31,7 @@ describe('api/articles', () => {
                 .expect(405)
         });
     });
-    describe('GET', () => {
+    describe.only('GET', () => {
         it('gets a list of articles', () => {
             return request
                 .get('/api/articles/')
@@ -71,6 +71,38 @@ describe('api/articles', () => {
                 .expect(200)
                 .then(({body: {articles}})=> {
                     expect(articles).to.be.descendingBy('author')
+                })
+        });
+        it('default limit of 10', () => {
+            return request
+                .get('/api/articles/')
+                .expect(200)
+                .then(({body: {articles}})=> {
+                    expect(articles.length).to.equal(10)
+                })
+        });
+        it('page query to get to the next page', () => {
+            return request
+                .get('/api/articles/?p=2')
+                .expect(200)
+                .then(({body: {articles}})=> {
+                    expect(articles.length).to.equal(3)
+                })
+        });
+        it('page query is dynamic with limit', () => {
+            return request
+                .get('/api/articles/?p=4&limit=4')
+                .expect(200)
+                .then(({body: {articles}})=> {
+                    expect(articles.length).to.equal(1)
+                })
+        });
+        it('can limit by query', () => {
+            return request
+                .get('/api/articles/?limit=2')
+                .expect(200)
+                .then(({body: {articles}})=> {
+                    expect(articles.length).to.equal(2)
                 })
         });
         it('400 on bad sort query', () => {
@@ -199,7 +231,7 @@ describe('api/articles', () => {
                     .get('/api/articles/9001')
                     .expect(404)
                     .then(({body: {msg}}) => {
-                        expect(msg).to.equal('article not found')
+                        expect(msg).to.equal('not found')
                     });
             });
             it('400 on invalid id', ()=> {
@@ -256,7 +288,7 @@ describe('api/articles', () => {
                     .send({inc_votes: 1})
                     .expect(404)
                     .then(({body: {msg}}) => {
-                        expect(msg).to.equal('article not found')
+                        expect(msg).to.equal('not found')
                     });
             });
             it('400 on invalid id', ()=> {

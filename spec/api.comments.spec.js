@@ -3,7 +3,7 @@ const chai = require('chai');
 const {expect} = chai
 const app = require('../app');
 const request = require('supertest')(app);
-const {connection} = require('../connection');
+const { connection } = require('../connection');
 chai.use(require('chai-sorted'))
 
 
@@ -297,7 +297,7 @@ describe('api/comments', () => {
                     .get('/api/articles/9001/comments/')
                     .expect(404)
                     .then(({body: {msg}}) => {
-                        expect(msg).to.equal('article not found');
+                        expect(msg).to.equal('not found');
                     });
             });
             it('200 and no content when requesting comments from an article with no comments', () => {
