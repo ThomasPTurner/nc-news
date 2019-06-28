@@ -1,12 +1,8 @@
 const { connection } = require('../connection')
 
-exports.fetchUsers = () => {
-    return connection('users')
-        .select('*')
-}
+exports.fetchUsers = () => connection('users')
+    .select('*');
 
-exports.fetchUserById = (id) => {
-    return connection('users')
-        .select('*')
-        .where('username','=',id)
-}
+exports.fetchUserById = (id) => connection('users')
+    .select('*')
+    .where('username','=',id)

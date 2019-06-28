@@ -1,6 +1,4 @@
-const { connection } = require('../connection')
+const { connection } = require('../connection');
 
-exports.fetchTopics = () => {
-    return connection('topics')
-        .select('*')
-}
+exports.fetchTopics = () => connection('topics')
+    .select('*')

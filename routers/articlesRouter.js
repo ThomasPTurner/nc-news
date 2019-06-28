@@ -1,7 +1,7 @@
 const express = require('express');
 const commentsRouter = require('./commentsRouter')
 const { badMethod }  = require('../errors');
-const { getArticles, getArticleById, patchArticle } = require('../controllers/');
+const { getArticles, getArticleById, patchArticle, postArticle } = require('../controllers/');
 const articlesRouter = express.Router();
 
 articlesRouter.route('/:id')
@@ -11,6 +11,7 @@ articlesRouter.route('/:id')
 
 articlesRouter.route('/')
     .get(getArticles)
+    .post(postArticle)
     .all(badMethod)
 
 articlesRouter.use('/:id/comments', commentsRouter)

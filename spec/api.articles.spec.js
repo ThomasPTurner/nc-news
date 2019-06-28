@@ -20,18 +20,24 @@ describe('api/articles', () => {
                 .delete('/api/articles/')
                 .expect(405)
         });
-        it('POST', () => {
-            return request
-                .post('/api/articles/')
-                .expect(405)
-        });
         it('PATCH', () => {
             return request
                 .patch('/api/articles/')
                 .expect(405)
         });
     });
-    describe('GET', () => {
+    describe('POST', () => {
+        it('posts an article', () => {
+            return request
+                .post('/api/articles/')
+                .send({body: 'this is a new article', username: 'fred', title: 'this is a title', topic: 'cats'})
+                .expect(200)
+                .then(({body: {article: {body}}}) => {
+                    expect(body).to.equal('this is a new article')
+                })
+        });
+    });
+    describe.only('GET', () => {
         it('gets a list of articles', () => {
             return request
                 .get('/api/articles/')

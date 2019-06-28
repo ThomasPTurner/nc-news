@@ -2,41 +2,38 @@ const { connection } = require('../connection')
 const { rejectEmptyArr, addPagination } = require('../db/utils/utils')
 
 exports.fetchArticles = ({id},{sort_by, order, author, topic, limit= 10, p = 1 }= {}) => {
+
     if (!(['asc', 'desc', undefined]).includes(order)) return Promise.reject({code: 400, msg: 'bad request'})
-    const promiseArticles = connection('articles')
+
+    const articlesQuery = connection('articles')
         .select('articles.*')
         .count('comments.article_id AS comment_count')
         .leftJoin('comments','articles.id','=','comments.article_id')
         .groupBy('articles.id')
+        .orderBy(sort_by || 'created_at', order || 'desc')
         .modify(query => {
             if (id) query.where({['articles.id']: id})
             if (author) query.where({['articles.author']: author})
             if (topic) query.where({['articles.topic']: topic})
-            if (limit !== -1) {
-                query.limit(limit)
-                    .offset(limit * (p - 1))
-            }
         })
-        .orderBy(sort_by || 'created_at', order || 'desc')
-    const promiseArr = [promiseArticles] // build an array of promises so we're not querying when we don't have to
-    if (topic)  {
-        const checkTopics = (connection('topics')
-            .select('*')
-            .where({slug: topic}))
-            .then(rejectEmptyArr)
-        promiseArr.unshift(checkTopics)
+    
+    addPagination(articlesQuery, limit, p)
+    
+    const checkForBadProperty = (key, value, table, arr) => {
+        if (value) {
+            const query = connection(table)
+                .select('*')
+                .where({[key]: value})
+                .then(rejectEmptyArr)
+            arr.unshift(query)
+        }
     }
-    if (author) {
-        const checkAuthor = (connection('users')
-            .select('*')
-            .where({username: author}))
-            .then(rejectEmptyArr)
-        promiseArr.unshift(checkAuthor)
-    }
+    
+    const promiseArr = [articlesQuery] // build an array of promises so we're not querying when we don't have to
+    checkForBadProperty('slug', topic, 'topics', promiseArr)
+    checkForBadProperty('username', author, 'users', promiseArr)
     return Promise.all(promiseArr)
-        .then((promiseArr) => {
-            return promiseArr[promiseArr.length-1]
-        })
+        .then((promiseArr) => promiseArr[promiseArr.length-1])
 }
 
 exports.changeArticle = ({id}, {inc_votes, ...rest}) => {
@@ -49,13 +46,14 @@ exports.changeArticle = ({id}, {inc_votes, ...rest}) => {
         .returning('*')
 }
 
-exports.fetchArticleCount = ({id = 'id'},{author, topic}) => {
-    return connection('articles')
-        .count(`${id} AS count`)
+exports.fetchArticleCount = ({author, topic}) => connection('articles')
+        .count(`id AS total_count`)
         .first()
         .modify(query => {
             if (author) query.where({['articles.author']: author})
             if (topic) query.where({['articles.topic']: topic})
         })
-}
 
+exports.createArticle = ({username: author, ...rest}) => connection('articles')
+        .insert({author, ...rest})
+        .returning('*')
