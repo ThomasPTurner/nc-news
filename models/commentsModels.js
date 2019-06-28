@@ -8,13 +8,17 @@ exports.createComment = ({id: article_id}, {username: author, body}) => {
         .returning('*')
 }
 
-exports.fetchComments = ({id: article_id}, {sort_by, order}= {}) => {
+exports.fetchComments = ({id: article_id}, {p=1, sort_by, order, limit=10 }= {}) => {
     if (!(['asc', 'desc', undefined]).includes(order)) return Promise.reject({code: 400, msg: 'bad request'})
     return connection('comments')
         .select('*')
         .orderBy(sort_by || 'created_at', order || 'desc')
         .modify(query => {
             if(article_id) query.where({article_id})
+            if (limit !== -1) {
+                query.limit(limit)
+                    .offset(limit * (p - 1))
+            }
         })
 }
 

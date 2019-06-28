@@ -224,7 +224,7 @@ describe('api/comments', () => {
                 });
             });
         });
-        describe('GET', () => {
+        describe.only('GET', () => {
             it('gets a list of comments specific to the article', () => {
                 return request
                     .get('/api/articles/1/comments/')
@@ -239,6 +239,38 @@ describe('api/comments', () => {
                             'created_at',
                             'body'
                         );
+                    })
+            });
+            it('default limit of 10', () => {
+                return request
+                    .get('/api/articles/1/comments/')
+                    .expect(200)
+                    .then(({body: {comments}})=> {
+                        expect(comments.length).to.equal(10)
+                    })
+            });
+            it('page query to get to the next page', () => {
+                return request
+                    .get('/api/articles/1/comments/?p=2')
+                    .expect(200)
+                    .then(({body: {comments}})=> {
+                        expect(comments.length).to.equal(3)
+                    })
+            });
+            it('can limit with query', () => {
+                return request
+                    .get('/api/articles/1/comments/?limit=4')
+                    .expect(200)
+                    .then(({body: {comments}})=> {
+                        expect(comments.length).to.equal(4)
+                    })
+            });
+            it.only('pages are dynamic with limit', () => {
+                return request
+                    .get('/api/articles/1/comments/?limit=6&p=3')
+                    .expect(200)
+                    .then(({body: {comments}})=> {
+                        expect(comments.length).to.equal(1)
                     })
             });
             it('comments are for a specific article', () => {

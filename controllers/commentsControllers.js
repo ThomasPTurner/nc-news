@@ -10,7 +10,7 @@ exports.postComment = ({params, query, body}, res, next) => {
 }
 
 exports.getComments = ({params, query}, res, next) => {
-    return fetchArticles(params, query)
+    return fetchArticles(params, {})
         .then(rejectEmptyArr)
         .then( () => {
             return fetchComments(params, query)
