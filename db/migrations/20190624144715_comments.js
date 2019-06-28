@@ -1,7 +1,7 @@
 exports.up = function(knex, Promise) {
     // console.log('creating table: comments');
     return knex.schema.createTable('comments', commentsTable => {
-        commentsTable.increments('id').primary().unique().notNullable();
+        commentsTable.increments('id').primary().unique();
         commentsTable.string('author').references('users.username').notNullable();
         commentsTable.integer('article_id').references('articles.id').notNullable();
         commentsTable.integer('votes').defaultsTo(0).notNullable();
