@@ -9,15 +9,10 @@ articlesRouter.use('/:id/comments', commentsRouter)
 articlesRouter.route('/:id')
     .get(getArticleById)
     .patch(patchArticle)
-    .post(badMethod)
-    .put(badMethod)
-    .delete(badMethod);
+    .all(badMethod)
 
 articlesRouter.route('/')
     .get(getArticles)
-    .post(badMethod)
-    .put(badMethod)
-    .patch(badMethod)
-    .delete(badMethod);;
+    .all(badMethod)
 
 module.exports =  articlesRouter;

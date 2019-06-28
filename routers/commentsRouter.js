@@ -6,15 +6,11 @@ const { badMethod } = require('../errors')
 commentsRouter.route('/')
     .get(getComments)
     .post(postComment)
-    .put(badMethod)
-    .delete(badMethod)
-    .patch(badMethod)
+    .all(badMethod)
 
 commentsRouter.route('/:comment_id')
     .patch(patchComment)
     .delete(deleteComment)
-    .post(badMethod)
-    .put(badMethod)
-    .get(badMethod)
+    .all(badMethod)
 
 module.exports =  commentsRouter;

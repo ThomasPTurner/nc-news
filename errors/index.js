@@ -4,7 +4,7 @@ exports.handleWithCode = (err, req, res, next) => {
 }
 exports.handle500 = (err, req, res, next) => {
     console.log(err)
-    res.status(500).send({code: 500, msg: 'interal server error'})
+    res.status(500).send({code: 500, msg: 'internal server error'})
 }
 exports.handlePGerrors = (err, req, res, next) => {
     const errRefObj = {

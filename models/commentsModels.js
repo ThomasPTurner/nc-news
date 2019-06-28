@@ -1,33 +1,33 @@
 const { connection } = require('../connection')
 
 exports.createComment = ({id: article_id}, {username: author, body}) => {
+    if (!article_id) return Promise.reject({code:405, msg: 'Method Not Allowed'})
     return connection('comments')
-        .insert({ article_id, author, body})
+        .insert({ article_id, author, body })
         .where({article_id})
         .returning('*')
 }
 
-exports.fetchComments = ({id: article_id}, {sort_by, order}) => {
+exports.fetchComments = ({id: article_id}, {sort_by, order}= {}) => {
     if (!(['asc', 'desc', undefined]).includes(order)) return Promise.reject({code: 400, msg: 'bad request'})
     return connection('comments')
         .select('*')
-        .where({article_id})
         .orderBy(sort_by || 'created_at', order || 'desc')
+        .modify(query => {
+            if(article_id) query.where({article_id})
+        })
 }
 
-exports.updateComment = ( {id: article_id, comment_id }, { inc_votes, ...rest}) => {
-    if (Object.keys(rest).length || !inc_votes) { // validate object
-        return Promise.reject({code: 400, msg: 'bad request'})
-    }
+exports.updateComment = ( { comment_id }, { inc_votes, ...rest}) => {
     return connection('comments')
-        .increment({votes: inc_votes})
-        .where({article_id, id: comment_id})
+        .increment({votes: inc_votes || 0})
+        .where({id: comment_id})
         .returning('*')
 }
 
-exports.removeComment = ({id: article_id, comment_id}) => {
+exports.removeComment = ({ comment_id }) => {
     return connection('comments')
-        .where({article_id, id: comment_id})
+        .where({id: comment_id})
         .delete()
         .returning('*')
 }

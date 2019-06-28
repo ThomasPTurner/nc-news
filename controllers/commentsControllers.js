@@ -1,7 +1,7 @@
-const { createComment, fetchComments, updateComment, removeComment } = require('../models')
+const { createComment, fetchComments, updateComment, removeComment, fetchArticles } = require('../models') 
 
 exports.postComment = ({params, query, body}, res, next) => {
-    createComment(params, body)
+    return createComment(params, body)
         .then( ([comment]) => {
             res.status(201).send({comment})
         })
@@ -9,25 +9,30 @@ exports.postComment = ({params, query, body}, res, next) => {
 }
 
 exports.getComments = ({params, query}, res, next) => {
-    fetchComments(params, query)
+    return fetchArticles(params, query)
+        .then(([article]) => {
+            if (!article) return Promise.reject({code: 404, msg: 'article not found'})
+        })
+        .then( () => {
+            return fetchComments(params, query)
+        })
         .then(comments => {
-            if (!comments.length) return Promise.reject({code:404, msg: 'dependant resource not found'})
             res.status(200).send({comments})
         })
         .catch(next)
 }
 
 exports.patchComment = ({params, query, body}, res, next) => {
-    updateComment(params, body)
+    return updateComment(params, body)
         .then(([comment]) => {
             if (!comment) return Promise.reject({code:404, msg: 'not found'})
             res.status(200).send({comment})
         })
-        .catch(next)  
+        .catch(next)
 }
 
 exports.deleteComment = ({params}, res, next) => {
-    removeComment(params)
+    return removeComment(params)
         .then(([comment])=> {
             if (!comment) return Promise.reject({code:404, msg: 'not found'})
             res.status(204).send()

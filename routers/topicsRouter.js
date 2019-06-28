@@ -5,8 +5,6 @@ const { badMethod }  = require('../errors');
 
 topicsRouter.route('/')
     .get(getTopics)
-    .post(badMethod)
-    .put(badMethod)
-    .patch(badMethod)
-    .delete(badMethod);
+    .all(badMethod)
+
 module.exports =  topicsRouter;

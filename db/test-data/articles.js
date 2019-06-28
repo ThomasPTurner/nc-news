@@ -88,4 +88,11 @@ module.exports = [
     body: 'Have you seen the size of that thing?',
     created_at: 154700514171,
   },
+  {
+    title: 'this is a article with no comments',
+    topic: 'mitch',
+    author: 'butter_bridge',
+    body: 'Vegeta is the best saiyan. Fight me.',
+    created_at: 154700544171,
+  },
 ];

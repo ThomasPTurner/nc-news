@@ -119,6 +119,22 @@ describe('api/articles', () => {
                     expect(checkTopics).to.be.true
                 })
         })
+        it('404 on bad topic query',() => {
+            return request 
+                .get('/api/articles/?topic=batman')
+                .expect(404)
+                .then(({body: {msg}})=>{
+                    expect(msg).to.equal('not found')
+                })
+        })
+        it('404 on bad author query',() => {
+            return request 
+                .get('/api/articles/?author=batman')
+                .expect(404)
+                .then(({body: {msg}})=>{
+                    expect(msg).to.equal('not found')
+                })
+        })
         it("multiple queries doesn't break it", () => {
             return request
                 .get('/api/articles/?sort_by=id&order=desc&topic=mitch&author=icellusedkars')
@@ -232,33 +248,6 @@ describe('api/articles', () => {
                     .expect(200)
                     .then(({ body: { article: { votes }}}) => {
                         expect(votes).to.equal(-1)
-                    })
-            });
-            it('400 on bad value', () => {
-                return request  
-                    .patch('/api/articles/1')
-                    .send({inc_votes: 'batman'})
-                    .expect(400)
-                    .then(({body: {msg}}) => {
-                        expect(msg).to.equal('bad request')
-                    })
-            });
-            it('400 on bad key', () => {
-                return request  
-                    .patch('/api/articles/1')
-                    .send({batman: 1})
-                    .expect(400)
-                    .then(({body: {msg}}) => {
-                        expect(msg).to.equal('bad request')
-                    })
-            });
-            it('400 on additional keys', () => {
-                return request  
-                    .patch('/api/articles/1')
-                    .send({batman: 1, inc_votes: 1})
-                    .expect(400)
-                    .then(({body: {msg}}) => {
-                        expect(msg).to.equal('bad request')
                     })
             });
             it('404 on valid but absent id', ()=> {

@@ -5,16 +5,10 @@ const { badMethod } = require('../errors')
 
 usersRouter.route('/')
     .get(getUsers)
-    .post(badMethod)
-    .put(badMethod)
-    .patch(badMethod)
-    .delete(badMethod);
+    .all(badMethod)
 
-usersRouter.route('/:id')
+usersRouter.route('/:user_id')
     .get(getUserById)
-    .post(badMethod)
-    .put(badMethod)
-    .patch(badMethod)
-    .delete(badMethod);
+    .all(badMethod)
 
 module.exports =  usersRouter;
