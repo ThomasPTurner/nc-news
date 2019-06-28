@@ -1,12 +1,12 @@
-const { fetchArticles, changeArticle }  = require('../models')
+const { fetchArticles, changeArticle, fetchArticleCount }  = require('../models')
 const { rejectEmptyArr } = require('../db/utils/utils')
 
 const getArticles = ({params, query}, res, next) => {
-    return Promise.all([fetchArticles(params, {limit: -1}), fetchArticles(params, query)])
-    .then(([all_articles,articles])=> { // rather than return the whole, return a count. Later.
+    return Promise.all([fetchArticles(params, query), fetchArticleCount(params, query)])
+    .then(([articles, {count} ])=> {
         const output = {
             articles: articles,
-            total_count: all_articles.length
+            total_count: count
         }
         res.status(200).send(output)
     })

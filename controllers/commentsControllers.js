@@ -1,7 +1,8 @@
-const { createComment, fetchComments, updateComment, removeComment, fetchArticles } = require('../models') 
+const { createComment, fetchComments, updateComment, removeComment, fetchArticles, fetchCommentCount } = require('../models') 
 const { rejectEmptyArr } = require('../db/utils/utils')
 
 exports.postComment = ({params, query, body}, res, next) => {
+    
     return createComment(params, body)
         .then( ([comment]) => {
             res.status(201).send({comment})
@@ -12,11 +13,13 @@ exports.postComment = ({params, query, body}, res, next) => {
 exports.getComments = ({params, query}, res, next) => {
     return fetchArticles(params, {})
         .then(rejectEmptyArr)
-        .then( () => {
-            return fetchComments(params, query)
-        })
-        .then(comments => {
-            res.status(200).send({comments})
+        .then(() => Promise.all([fetchComments(params, query),fetchCommentCount(params)]))
+        .then(([comments,{total_count}]) => { // add the total_count (without passing in the whole table)
+            const output = {
+                comments,
+                total_count
+            }
+            res.status(200).send(output)
         })
         .catch(next)
 }

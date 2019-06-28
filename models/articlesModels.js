@@ -48,3 +48,14 @@ exports.changeArticle = ({id}, {inc_votes, ...rest}) => {
         .increment({votes: inc_votes || 0})
         .returning('*')
 }
+
+exports.fetchArticleCount = ({id = 'id'},{author, topic}) => {
+    return connection('articles')
+        .count(`${id} AS count`)
+        .first()
+        .modify(query => {
+            if (author) query.where({['articles.author']: author})
+            if (topic) query.where({['articles.topic']: topic})
+        })
+}
+

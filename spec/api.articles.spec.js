@@ -102,7 +102,15 @@ describe('api/articles', () => {
                 .get('/api/articles/')
                 .expect(200)
                 .then(({body: {total_count}}) => {
-                    expect(total_count).to.equal(13)
+                    expect(total_count).to.equal('13')
+                })
+        });
+        it('total count changes with queries', () => {
+            return request
+                .get('/api/articles/?limit=4&page=2&topic=cats')
+                .expect(200)
+                .then(({body: {total_count}}) => {
+                    expect(total_count).to.equal('1')
                 })
         });
         it('can limit by query', () => {

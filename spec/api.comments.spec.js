@@ -56,6 +56,14 @@ describe('api/comments', () => {
                     expect(comments).to.be.descendingBy('author')
                 })
         });
+        it('has a total_count key', () => {
+            return request
+                .get('/api/comments/')
+                .expect(200)
+                .then(({body: {total_count}})=> {
+                    expect(+total_count).to.be.greaterThan(1)
+                })
+        });
         it('400 on bad sort query', () => {
             return request
                 .get('/api/comments/?sort_by=batman')
@@ -224,7 +232,7 @@ describe('api/comments', () => {
                 });
             });
         });
-        describe.only('GET', () => {
+        describe('GET', () => {
             it('gets a list of comments specific to the article', () => {
                 return request
                     .get('/api/articles/1/comments/')
@@ -265,7 +273,7 @@ describe('api/comments', () => {
                         expect(comments.length).to.equal(4)
                     })
             });
-            it.only('pages are dynamic with limit', () => {
+            it('pages are dynamic with limit', () => {
                 return request
                     .get('/api/articles/1/comments/?limit=6&p=3')
                     .expect(200)

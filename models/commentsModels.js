@@ -35,3 +35,12 @@ exports.removeComment = ({ comment_id }) => {
         .delete()
         .returning('*')
 }
+
+exports.fetchCommentCount = ({id: article_id}) => {
+    return connection('comments')
+        .count('article_id AS total_count')
+        .first()
+        .modify(query => {
+            if (article_id) query.where({article_id})
+        })
+}
