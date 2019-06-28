@@ -28,3 +28,8 @@ exports.rejectEmptyArr = (arr, errObj = {code: 404, msg: 'not found'}) => {
     if (arr.length === 0) return Promise.reject(errObj)
     else return arr
 };
+
+exports.addPagination = (query, limit, p) => {
+    query.limit(limit)
+        .offset(limit * (p - 1))
+}

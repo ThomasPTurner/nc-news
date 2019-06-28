@@ -97,6 +97,14 @@ describe('api/articles', () => {
                     expect(articles.length).to.equal(1)
                 })
         });
+        it('has a total count', () => {
+            return request
+                .get('/api/articles/')
+                .expect(200)
+                .then(({body: {total_count}}) => {
+                    expect(total_count).to.equal(13)
+                })
+        });
         it('can limit by query', () => {
             return request
                 .get('/api/articles/?limit=2')
