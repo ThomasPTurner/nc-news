@@ -348,6 +348,22 @@ describe('api/comments', () => {
                         expect(comment).to.be.undefined
                     })
             });
+            it('has a total_count key', () => {
+                return request
+                    .get('/api/articles/1/comments/')
+                    .expect(200)
+                    .then(({body: {total_count}})=> {
+                        expect(+total_count).to.be.greaterThan(1)
+                    })
+            });
+            it('total count changes with articles', () => {
+                return request
+                    .get('/api/articles/2/comments/')
+                    .expect(200)
+                    .then(({body: {total_count}})=> {
+                        expect(+total_count).to.equal(0)
+                    })
+            });
         });
     });
 });
