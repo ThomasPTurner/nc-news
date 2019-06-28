@@ -4,7 +4,7 @@ exports.fetchArticles = ({id},{sort_by, order, author, topic}= {}) => {
     if (!(['asc', 'desc', undefined]).includes(order)) return Promise.reject({code: 400, msg: 'bad request'})
     const promiseArticles = connection('articles')
         .select('articles.*')
-        .count('comments.id AS comment_count')
+        .count('comments.article_id AS comment_count')
         .leftJoin('comments','articles.id','=','comments.article_id')
         .groupBy('articles.id')
         .modify(query => {

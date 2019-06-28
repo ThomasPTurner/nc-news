@@ -37,7 +37,7 @@ describe('api/topics', () => {
                 .get('/api/topics/')
                 .expect(200)
                 .then(( {body: {topics}} ) => {
-                    expect(topics.length).to.equal(3);
+                    expect(topics.length).to.be.greaterThan(1);
                     expect(topics[0]).to.have.keys('slug', 'description')
                 });
         });

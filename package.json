@@ -4,7 +4,7 @@
   "description": "bc-nc-news",
   "main": "index.js",
   "scripts": {
-    "dev": "npm run setup-dbs && npm run seed:test && npm t",
+    "dev": "nodemon listen.js",
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed:dev": "knex seed:run",
     "seed:test": "NODE_ENV=test knex seed:run",
@@ -33,13 +33,13 @@
   "dependencies": {
     "express": "^4.17.1",
     "knex": "^0.17.6",
+    "nodemon": "^1.19.1",
     "pg": "^7.11.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
     "chai-sorted": "^0.2.0",
     "mocha": "^6.1.4",
-    "nodemon": "^1.19.1",
     "supertest": "^4.0.2"
   }
 }

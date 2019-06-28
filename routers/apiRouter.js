@@ -4,9 +4,9 @@ const usersRouter = require('./usersRouter');
 const articlesRouter = require('./articlesRouter');
 const commentsRouter = require('./commentsRouter');
 const {badMethod} = require('../errors');
-const apiJSON = require('../api.json')
-const apiRouter = express.Router();
 
+const apiRouter = express.Router();
+const apiJSON = require('../api.json')
 apiRouter.route('/').get((req, res, next)=>res.status(200).send(apiJSON))
     .all(badMethod)
 
