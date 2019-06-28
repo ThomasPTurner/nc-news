@@ -1,0 +1,136 @@
+{
+    "GET /api": {
+      "description": "serves up a json representation of all the available endpoints of the api"
+    },
+    "GET /api/topics": {
+      "description": "serves an array of all topics",
+      "queries": [],
+      "exampleResponse": {
+        "topics": [{ "slug": "football", "description": "Footie!" }]
+      }
+    },
+    "GET /api/articles": {
+      "description": "serves an array of articles",
+      "queries": ["author", "topic", "sort_by", "order"],
+      "exampleResponse": {
+            "articles": [
+                {
+                    "id": 1,
+                    "title": "the articles' title",
+                    "body": "an example of the article body",
+                    "votes": 1,
+                    "topic": "coding",
+                    "author": "xXxSephirothxXx",
+                    "created_at": "2016-08-18T12:07:52.389Z",
+                    "comment_count": "8"
+                }
+            ]
+      }
+    },
+    "GET /api/articles/:article_id": {
+        "description": "serves up the specified article",
+        "exampleResponse": {
+            "article": {
+                "id": 1,
+                "title": "the articles' title",
+                "body": "an example of the article body",
+                "votes": 1,
+                "topic": "coding",
+                "author": "xXxSephirothxXx",
+                "created_at": "2016-08-18T12:07:52.389Z",
+                "comment_count": "8"
+            }
+        }
+    },
+    "PATCH /api/articles/:article_id": {
+        "description": "change the votes on an article then returns the article with the change applied",
+        "exampleRequest": { "votes_inc": 1 },
+        "exampleResponse": {
+            "article": {
+                "id": 1,
+                "title": "the articles' title",
+                "body": "an example of the article body",
+                "votes": 2,
+                "topic": "coding",
+                "author": "xXxSephirothxXx",
+                "created_at": "2016-08-18T12:07:52.389Z",
+                "comment_count": "8"
+            }
+        }
+    },
+    "GET /api/comments" :{
+        "description": "serves an array of all comments. Ordered desc. by created_by by default",
+        "queries": ["sort_by", "order"],
+        "exampleResResponse" :[
+            {
+                "id": 173,
+                "author": "xXxSephirothxXx",
+                "article_id": 15,
+                "votes": 16,
+                "created_at": "2018-02-01T16:25:16.390Z",
+                "body": "An example of the comment body."
+            }
+
+        ]
+    },
+    "PATCH /api/comments/:comment_id" :{
+        "description": "change the votes on an comment then serve up the comment with the change applied",
+        "exampleRequest": { "votes_inc": 1 },
+        "exampleResResponse" :{
+            "id": 173,
+            "author": "xXxSephirothxXx",
+            "article_id": 15,
+            "votes": 17,
+            "created_at": "2018-02-01T16:25:16.390Z",
+            "body": "An example of the comment body."
+        }
+    },
+    "DELETE /api/comments/:comment_id" :{
+        "description": "remove a comment from the database. Serve up the comment removed.",
+        "exampleResResponse" :{
+            "id": 173,
+            "author": "xXxSephirothxXx",
+            "article_id": 15,
+            "votes": 16,
+            "created_at": "2018-02-01T16:25:16.390Z",
+            "body": "An example of the comment body."
+        }
+    },
+    "POST /api/article/:article_id/comments" :{
+        "description": "create a new comment on the specified article. Serves up the created comment",
+        "exampleRequest": {
+            "username": "xXxSephirophxXx",
+            "body": "A comment body!"
+        },
+        "exampleResResponse" :[
+            {
+                "id": 1337,
+                "author": "xXxSephirothxXx",
+                "article_id": 15,
+                "votes": 0,
+                "created_at": "2018-02-01T16:25:16.390Z",
+                "body": "A comment body!"
+            }
+
+        ]
+    },
+    "GET /api/users/" :{
+        "description": "serves up an array of all users",
+        "queries": [],
+        "exampleResponse": [
+            {
+                "username": "xXxSephirothxXx",
+                "avatar_url": "https://vignette.wikia.nocookie.net/finalfantasy/images/e/e4/Sephiroth-FFVIIArt.png/revision/latest/scale-to-width-down/350?cb=20141008012137",
+                "name": "Edge Lord"
+            }
+        ]
+    },
+    "GET /api/users/:user_id" :{
+        "description": "serves up the specified user",
+        "exampleResponse": {
+            "username": "xXxSephirothxXx",
+            "avatar_url": "https://vignette.wikia.nocookie.net/finalfantasy/images/e/e4/Sephiroth-FFVIIArt.png/revision/latest/scale-to-width-down/350?cb=20141008012137",
+            "name": "Edge Lord"
+        }
+    }
+}

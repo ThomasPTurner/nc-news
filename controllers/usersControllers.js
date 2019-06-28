@@ -10,7 +10,6 @@ const getUsers = (req, res, next) => {
 const getUserById = ({params: {user_id}}, res, next)=>{
     return fetchUserById(user_id)
         .then(([user]) => {
-           
             if (!user) return Promise.reject({code: 404, msg: 'user not found'})
             res.status(200).send({user});
         })

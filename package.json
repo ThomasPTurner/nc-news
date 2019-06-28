@@ -4,6 +4,7 @@
   "description": "bc-nc-news",
   "main": "index.js",
   "scripts": {
+    "dev": "npm run setup-dbs && npm run seed:test && npm t",
     "setup-dbs": "psql -f ./db/setup.sql",
     "seed:dev": "knex seed:run",
     "seed:test": "NODE_ENV=test knex seed:run",
