@@ -37,7 +37,7 @@ describe('api/articles', () => {
                 })
         });
     });
-    describe.only('GET', () => {
+    describe('GET', () => {
         it('gets a list of articles', () => {
             return request
                 .get('/api/articles/')

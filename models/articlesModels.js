@@ -1,10 +1,8 @@
 const { connection } = require('../connection')
-const { rejectEmptyArr, addPagination } = require('../db/utils/utils')
+const { addPagination, checkForBadProperty, rejectBadOrderQuery } = require('../db/utils/utils')
 
 exports.fetchArticles = ({id},{sort_by, order, author, topic, limit= 10, p = 1 }= {}) => {
-
-    if (!(['asc', 'desc', undefined]).includes(order)) return Promise.reject({code: 400, msg: 'bad request'})
-
+    
     const articlesQuery = connection('articles')
         .select('articles.*')
         .count('comments.article_id AS comment_count')
@@ -16,22 +14,14 @@ exports.fetchArticles = ({id},{sort_by, order, author, topic, limit= 10, p = 1 }
             if (author) query.where({['articles.author']: author})
             if (topic) query.where({['articles.topic']: topic})
         })
-    
     addPagination(articlesQuery, limit, p)
-    
-    const checkForBadProperty = (key, value, table, arr) => {
-        if (value) {
-            const query = connection(table)
-                .select('*')
-                .where({[key]: value})
-                .then(rejectEmptyArr)
-            arr.unshift(query)
-        }
-    }
-    
-    const promiseArr = [articlesQuery] // build an array of promises so we're not querying when we don't have to
-    checkForBadProperty('slug', topic, 'topics', promiseArr)
-    checkForBadProperty('username', author, 'users', promiseArr)
+
+    // build an array of promises so we're not querying when we don't have to
+    const promiseArr = [articlesQuery]
+    rejectBadOrderQuery(order, promiseArr)
+    checkForBadProperty(topic, 'slug', 'topics', promiseArr)
+    checkForBadProperty(author, 'username', 'users', promiseArr)
+
     return Promise.all(promiseArr)
         .then((promiseArr) => promiseArr[promiseArr.length-1])
 }

@@ -9,9 +9,9 @@ const getArticles = ({params, query}, res, next) => Promise.all([fetchArticles(p
     .catch(next)
 
 const getArticleById = ({params, query}, res, next)=> fetchArticles(params, query)
-        .then(rejectEmptyArr)
-        .then(([article]) => res.status(200).send({article}))
-        .catch(next);
+    .then(rejectEmptyArr)
+    .then(([article]) => res.status(200).send({article}))
+    .catch(next);
 
 
 const patchArticle = ({params, body, query}, res, next) => changeArticle(params, body)

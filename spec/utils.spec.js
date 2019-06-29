@@ -1,6 +1,121 @@
 process.env.NODE_ENV = 'test'
 const { expect } = require('chai');
-const { formatDate, makeRefObj, formatComments } = require('../db/utils/utils');
+const { rejectEmptyArr, rejectBadOrderQuery, formatDate, makeRefObj, formatComments, addPagination, checkForBadProperty } = require('../db/utils/utils');
+const app = require('../app');
+const request = require('supertest')(app);
+const {connection} = require('../connection')
+
+describe('rejectBadOrderQuery', () => {
+    it('does nothing if "order" is an allowed value', () => {
+        const arr = []
+        rejectBadOrderQuery(undefined, arr)
+        rejectBadOrderQuery('asc', arr)
+        rejectBadOrderQuery('desc', arr)
+        expect(arr).to.eql([])
+    });
+    it('unshifts promise that will always reject on a disallowed value', () => {
+        const arr = ['bar']
+        rejectBadOrderQuery('foo', arr)
+        return arr[0]
+            .then(()=>{
+                expect('the promise did not reject').to.equal('')
+            })
+            .catch(()=>{
+                expect('the promise rejected').to.equal('the promise rejected')
+            })
+    });
+    it('rejects with a 400 error object', () => {
+        const arr = []
+        rejectBadOrderQuery('foo', arr)
+        return arr[0]
+            .catch(({code})=>{
+                expect(code).to.equal(400)
+            })
+    });
+});
+
+
+describe('rejectEmptyArr', () => {
+    it('simply returns an array with contents', () => {
+        expect(rejectEmptyArr([1])).to.eql([1])
+    });
+    it('returns a rejected promise on an empty array', () => {
+        return rejectEmptyArr([])
+            .then(()=>{
+                expect('the promise did not reject').to.equal('')
+            })
+            .catch(()=>{
+                expect('the promise rejected').to.equal('the promise rejected')
+            })
+    });
+    it('the rejected promise provided a 404 error object by default', () => {
+        return rejectEmptyArr([])
+            .catch(({code})=>{
+                expect(code).to.eql(404)
+            })
+    });
+    it('the rejected promise passes the second argument if provided', () => {
+        return rejectEmptyArr([], 'foo')
+            .catch((err)=>{
+                expect(err).to.eql('foo')
+            })
+    });
+});
+
+
+describe('addPagination', () => {
+    beforeEach(() => {
+        return connection.seed.run();
+    });
+    it('adds pagination to a query', () => {
+        const query = connection('articles').select('*').orderBy('id')
+        const [limit, page] = [5, 2]
+        addPagination(query, limit, page)
+        return query
+            .then(([{id}]) =>
+                expect(id).to.equal(6)
+            )
+        
+    });
+});
+
+describe('checkForBadProperty', () => {
+    beforeEach(() => {
+        return connection.seed.run();
+    });
+    it('does nothing if value is falsy', () => {
+        const [value, column, table, arr] = [undefined, 'id', 'articles', []]
+        checkForBadProperty(value, column, table, arr)
+        expect(arr).to.eql([])
+    });
+    it('unshifts a promise into the array on truthy value', () => {
+        const [value, column, table, arr] = ['1', 'id', 'articles', [0]]
+        checkForBadProperty(value, column, table, arr)
+        return arr[0]
+            .then(([{id}]) =>
+                expect(id).to.equal(1)
+            )
+    });
+    it('promise will reject if value is no in the table and column', () => {
+        const [value, column, table, arr] = ['giraffe', 'id', 'articles', [0]]
+        checkForBadProperty(value, column, table, arr)
+        return arr[0]
+            .then(()=>{
+                expect('the promise did not reject').to.equal('')
+            })
+            .catch(()=>{
+                expect('the promise rejected').to.equal('the promise rejected')
+            })
+    });
+    it('rejected promise passes a pg error 22P02', () => {
+        const [value, column, table, arr] = ['giraffe', 'id', 'articles', [0]]
+        checkForBadProperty(value, column, table, arr)
+        return arr[0]
+            .catch(({code})=>{
+                expect(code).to.equal('22P02')
+            })
+    });
+});
 
 describe('formatDate', () => {
     it('handles an empty array', () => {
