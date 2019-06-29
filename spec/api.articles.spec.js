@@ -31,9 +31,54 @@ describe('api/articles', () => {
             return request
                 .post('/api/articles/')
                 .send({body: 'this is a new article', username: 'fred', title: 'this is a title', topic: 'cats'})
-                .expect(200)
+                .expect(201)
                 .then(({body: {article: {body}}}) => {
                     expect(body).to.equal('this is a new article')
+                })
+        });
+        it('400 on posting without required properties: body', () => {
+            return request
+                .post('/api/articles/')
+                .send({username: 'fred', title: 'this is a title', topic: 'cats'})
+                .expect(400)
+                .then(({body: {msg}}) => {
+                    expect(msg).to.equal('bad request: value cannot be null')
+                })
+        });
+        it('400 on posting without required properties: topic', () => {
+            return request
+                .post('/api/articles/')
+                .send({body: 'this is a new article', username: 'fred', topic: 'cats'})
+                .expect(400)
+                .then(({body: {msg}}) => {
+                    expect(msg).to.equal('bad request: value cannot be null')
+                })
+        });
+        it('404 on post from a username that does not exist', () => {
+            return request
+                .post('/api/articles/')
+                .send({body: 'this is a new article', username: 'foo', title: 'this is a title', topic: 'cats'})
+                .expect(404)
+                .then(({body: {msg}}) => {
+                    expect(msg).to.equal('dependant resource not found')
+                })
+        });
+        it('404 on post to a topic that does not exist', () => {
+            return request
+                .post('/api/articles/')
+                .send({body: 'this is a new article', username: 'fred', title: 'this is a title', topic: 'foo'})
+                .expect(404)
+                .then(({body: {msg}}) => {
+                    expect(msg).to.equal('dependant resource not found')
+                })
+        });
+        it('400 on additional keys', () => {
+            return request
+                .post('/api/articles/')
+                .send({body: 'this is a new article', username: 'fred', title: 'this is a title', topic: 'cats', foo: 'bar'})
+                .expect(400)
+                .then(({body: {msg}}) => {
+                    expect(msg).to.equal('bad request')
                 })
         });
     });
@@ -210,15 +255,48 @@ describe('api/articles', () => {
                     .put('/api/articles/1')
                     .expect(405)
             });
-            it('DELETE', () => {
-                return request
-                    .delete('/api/articles/1')
-                    .expect(405)
-            });
             it('POST', () => {
                 return request
                     .post('/api/articles/1')
                     .expect(405)
+            });
+        });
+        describe('DELETE', () => {
+            it('removes an article by id. Returns nothing.', () => {
+                return request
+                    .delete('/api/articles/1')
+                    .expect(204)
+                    .then(({body})=>{
+                        expect(body).to.eql({})
+                    })
+                    .then(()=>{
+                        return connection('articles')
+                            .select('*')
+                            .where('id','=',1)
+                    })
+                    .then(([article])=> {
+                        expect(article).to.be.undefined
+                    })
+            });
+            it('also removes associated comments', () => {
+                return request
+                    .delete('/api/articles/1')
+                    .expect(204)
+                    .then(() => connection('comments')
+                        .select('*')
+                        .where('article_id','=',1)
+                    )
+                    .then(([comments]) => {
+                        expect(comments).to.be.undefined
+                    })
+            });
+            it('404 on bad article', () => {
+                return request 
+                    .delete('/api/articles/9001')
+                    .expect(404)
+                    .then( ({body: {msg}}) => {
+                      expect(msg).to.equal('not found')
+                    })
             });
         });
         describe('GET', () => {

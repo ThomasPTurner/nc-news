@@ -37,13 +37,24 @@ exports.changeArticle = ({id}, {inc_votes, ...rest}) => {
 }
 
 exports.fetchArticleCount = ({author, topic}) => connection('articles')
-        .count(`id AS total_count`)
-        .first()
-        .modify(query => {
-            if (author) query.where({['articles.author']: author})
-            if (topic) query.where({['articles.topic']: topic})
-        })
+    .count(`id AS total_count`)
+    .first()
+    .modify(query => {
+        if (author) query.where({['articles.author']: author})
+        if (topic) query.where({['articles.topic']: topic})
+    })
 
 exports.createArticle = ({username: author, ...rest}) => connection('articles')
-        .insert({author, ...rest})
-        .returning('*')
+    .insert({author, ...rest})
+    .returning('*')
+
+exports.removeArticleById = ({id}) => {
+    return connection('comments')
+        .where({article_id: id})
+        .delete()
+        .then(()=> connection('articles')
+            .where({id})
+            .delete()
+            .returning('*')
+        )
+}
