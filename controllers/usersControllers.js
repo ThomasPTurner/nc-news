@@ -1,7 +1,7 @@
 const  { fetchUsers, fetchUserById }  = require('../models');
 const { rejectEmptyArr } = require('../db/utils/utils');
 
-const getUsers = (req, res, next) => fetchUsers()
+const getUsers = ({query}, res, next) => fetchUsers(query)
         .then((users)=> res.status(200).send({users}))
         .catch(next);
 

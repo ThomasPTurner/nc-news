@@ -1,4 +1,4 @@
-const { addPagination } = require('../db/utils/utils')
+const { addPagination, addSortByAndOrder } = require('../db/utils/utils')
 const { connection } = require('../connection')
 
 exports.createComment = ({id: article_id}, {username: author, body}) => {
@@ -11,14 +11,14 @@ exports.createComment = ({id: article_id}, {username: author, body}) => {
 
 exports.fetchComments = ({id: article_id}, {p=1, sort_by, order, limit=10 }= {}) => {
     if (!(['asc', 'desc', undefined]).includes(order)) return Promise.reject({code: 400, msg: 'bad request'})
-    const query = connection('comments')
+    const commentsQuery = connection('comments')
         .select('*')
-        .orderBy(sort_by || 'created_at', order || 'desc')
-        .modify(query => {
-            if(article_id) query.where({article_id})
+        .modify(commentsQuery => {
+            if(article_id) commentsQuery.where({article_id})
         })
-    addPagination(query, limit, p)
-    return query
+    addSortByAndOrder(commentsQuery, sort_by, order)
+    addPagination(commentsQuery, limit, p)
+    return commentsQuery
 }
 
 exports.updateComment = ( { comment_id }, { inc_votes, ...rest}) => connection('comments')

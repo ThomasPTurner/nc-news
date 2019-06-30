@@ -23,14 +23,27 @@ const formatComments = (comments, articleRef) => {
             ...rest
         };
     });
+};
+
+// query utils
+
+// adds query functionality for sort_by and order with defaults to timestamp.
+const addSortByAndOrder = (query, sort_by, order) => {
+    query.orderBy(sort_by || 'created_at', order || 'desc')
 }
+
 
 // adds pagination to query
 const addPagination = (query, limit, p) => {
     query.limit(limit)
-        .offset(limit * (p - 1))
-}
+        .offset(limit * (p - 1));
+};
 
+// condenses on a given property and adds a count
+const condenseAndAddCount = (query, condenseOn, alias = 'count') => {
+    query.count({[alias]: condenseOn})
+        .groupBy(`${query._single.table}.id`);
+};
 
 // promise.all utils
 
@@ -58,4 +71,4 @@ const rejectBadOrderQuery = (order, arr) => {
     }
 }
 
-module.exports = { rejectBadOrderQuery, addPagination, rejectEmptyArr, checkForBadProperty, formatComments, formatDate, makeRefObj}
+module.exports = { addSortByAndOrder, condenseAndAddCount, rejectBadOrderQuery, addPagination, rejectEmptyArr, checkForBadProperty, formatComments, formatDate, makeRefObj}
