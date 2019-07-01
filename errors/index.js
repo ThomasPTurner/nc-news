@@ -9,6 +9,7 @@ exports.handle500 = (err, req, res, next) => {
 }
 
 exports.handlePGerrors = (err, req, res, next) => {
+    console.log(err)
     const errRefObj = {
         ['22P02']: {code: 400, msg: 'bad request'},
         ['23503']: {code: 404, msg: 'dependant resource not found'},

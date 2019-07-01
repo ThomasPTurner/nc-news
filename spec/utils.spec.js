@@ -5,7 +5,7 @@ chai.use(require('chai-sorted'))
 const { addSortByAndOrder, rejectEmptyArr, rejectBadOrderQuery, formatDate, makeRefObj, formatComments, addPagination, checkForBadProperty } = require('../db/utils/utils');
 const app = require('../app');
 const request = require('supertest')(app);
-const {connection} = require('../connection')
+const { connection } = require('../connection')
 
 describe('addSortByAndOrder', () => {
     beforeEach(() => {
@@ -50,7 +50,6 @@ describe('rejectBadOrderQuery', () => {
     });
 });
 
-
 describe('rejectEmptyArr', () => {
     it('simply returns an array with contents', () => {
         expect(rejectEmptyArr([1])).to.eql([1])
@@ -77,7 +76,6 @@ describe('rejectEmptyArr', () => {
             })
     });
 });
-
 
 describe('addPagination', () => {
     beforeEach(() => {
@@ -158,6 +156,7 @@ describe('formatDate', () => {
         expect(result[0].b).to.equal('Hello');
     });
 });
+
 describe('makeRefObj', () => {
     it('returns an empty object, when passed an empty array', () => {
       const input = [];
@@ -177,7 +176,8 @@ describe('makeRefObj', () => {
       const expected = {Tom: '1', Dick: '2'};
       expect(actual).to.eql(expected);
     });
-  });
+});
+
 describe('formatComments', () => {
     it('throws back an empty array', () => {
         expect(formatComments([],{})).to.eql([])

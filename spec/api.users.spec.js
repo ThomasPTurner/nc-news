@@ -44,6 +44,40 @@ describe('api/users', () => {
                         expect(users[0]).to.have.keys('username', 'avatar_url', 'name')
                     });
             });
+            it.only('users have an articles count', () => {
+                return request
+                    .get('/api/users/')
+                    .expect(200)
+                    .then(({body: {users: [{article_count}]}})=> {
+                        expect(article_count).to.equal('3')
+                    })
+                
+            });
+            it.only('users have a comment count', () => {
+                return request
+                    .get('/api/users/')
+                    .expect(200)
+                    .then(({body: {users: [,,{comment_count}]}})=> {
+                        expect(comment_count).to.equal('13')
+                    })
+                
+            });
+            it.only('users have a comment votes total', () => {
+                return request
+                    .get('/api/users/')
+                    .expect(200)
+                    .then(({body: {users: [,,{comment_votes}]}})=> {
+                        expect(comment_votes).to.equal('36')
+                    })
+            });
+            it.only('users have an article votes total', () => {
+                return request
+                    .get('/api/users/')
+                    .expect(200)
+                    .then(({body: {users: [,,,,{article_votes}]}})=> {
+                        expect(article_votes).to.equal('100')
+                    })
+            });
             it('users are sorted by descending username by default', () => {
                 return request
                     .get('/api/users/')

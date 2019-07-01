@@ -1,5 +1,7 @@
 process.env.NODE_ENC = 'test';
-const { expect } = require('chai');
+const chai = require('chai');
+const { expect } = chai;
+chai.use(require('chai-sorted'));
 const app = require('../app');
 const request = require('supertest')(app);
 const {connection} = require('../connection');
@@ -113,5 +115,14 @@ describe('api/topics', () => {
                     expect(msg).to.equal('bad request')
                 })
         });
+        it('topics have an article count', () => {
+            return request
+                .get('/api/topics')
+                .expect(200)
+                .then(({body: {topics: [,,{article_count}]}}) => {
+                    console.log(article_count)
+                    expect(article_count).to.equal('1')
+                })
+        })
     });
 });
