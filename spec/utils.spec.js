@@ -1,9 +1,26 @@
 process.env.NODE_ENV = 'test'
-const { expect } = require('chai');
-const { rejectEmptyArr, rejectBadOrderQuery, formatDate, makeRefObj, formatComments, addPagination, checkForBadProperty } = require('../db/utils/utils');
+const chai = require('chai')
+const { expect } = chai;
+chai.use(require('chai-sorted'))
+const { addSortByAndOrder, rejectEmptyArr, rejectBadOrderQuery, formatDate, makeRefObj, formatComments, addPagination, checkForBadProperty } = require('../db/utils/utils');
 const app = require('../app');
 const request = require('supertest')(app);
 const {connection} = require('../connection')
+
+describe('addSortByAndOrder', () => {
+    beforeEach(() => {
+        return connection.seed.run();
+    });
+    it('adds sorting and order to a query', () => {
+        const query = connection('articles').select('*')
+        const [sort_by, order] = ['id', 'asc'];
+        addSortByAndOrder(query, sort_by, order);
+        return query
+            .then((articles) =>
+                expect(articles).to.be.ascendingBy('id')
+            );
+    });
+});
 
 describe('rejectBadOrderQuery', () => {
     it('does nothing if "order" is an allowed value', () => {
@@ -21,7 +38,6 @@ describe('rejectBadOrderQuery', () => {
                 expect('the promise did not reject').to.equal('')
             })
             .catch(()=>{
-                expect('the promise rejected').to.equal('the promise rejected')
             })
     });
     it('rejects with a 400 error object', () => {

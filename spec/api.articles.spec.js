@@ -1,9 +1,10 @@
 process.env.NODE_ENC = 'test';
-const { expect } = require('chai');
+const chai = require('chai');
+const { expect } = chai;
+chai.use(require('chai-sorted'));
 const app = require('../app');
 const request = require('supertest')(app);
 const {connection} = require('../connection');
-
 
 describe('api/articles', () => {
     beforeEach(() => {
@@ -148,22 +149,6 @@ describe('api/articles', () => {
                     expect(articles.length).to.equal(1)
                 })
         });
-        it('has a total count', () => {
-            return request
-                .get('/api/articles/')
-                .expect(200)
-                .then(({body: {total_count}}) => {
-                    expect(total_count).to.equal('13')
-                })
-        });
-        it('total count changes with queries', () => {
-            return request
-                .get('/api/articles/?limit=4&page=2&topic=cats')
-                .expect(200)
-                .then(({body: {total_count}}) => {
-                    expect(total_count).to.equal('1')
-                })
-        });
         it('can limit by query', () => {
             return request
                 .get('/api/articles/?limit=2')
@@ -185,7 +170,7 @@ describe('api/articles', () => {
                 .get('/api/articles/?order=asc')
                 .expect(200)
                 .then(({body: {articles}})=> {
-                    expect(articles).to.be.ascendingBy('votes')
+                    expect(articles).to.be.ascendingBy('created_at')
                 })
         });
         it('400 on bad orders query', () => {
@@ -196,17 +181,6 @@ describe('api/articles', () => {
                     expect(msg).to.equal('bad request')
                 })
         });
-        it('query of author to restrict results',() => {
-            return request 
-                .get('/api/articles/?author=icellusedkars')
-                .expect(200)
-                .then(({body: {articles}})=>{
-                    const checkAuthor = articles.every(({author})=> {
-                        return (author === 'icellusedkars')
-                    })
-                    expect(checkAuthor).to.be.true
-                })
-        })
         it('query of topics to restrict results',() => {
             return request 
                 .get('/api/articles/?topic=cats')
@@ -246,6 +220,49 @@ describe('api/articles', () => {
                     expect(articles).to.be.descendingBy('id');
                 })
         })
+        it('query of author to restrict results',() => {
+            return request 
+                .get('/api/articles/?author=icellusedkars')
+                .expect(200)
+                .then(({body: {articles}})=>{
+                    const checkAuthor = articles.every(({author})=> {
+                        return (author === 'icellusedkars')
+                    })
+                    expect(checkAuthor).to.be.true
+                })
+        })
+        it('404 on bad topic query',() => {
+            return request 
+                .get('/api/articles/?topic=batman')
+                .expect(404)
+                .then(({body: {msg}})=>{
+                    expect(msg).to.equal('not found')
+                })
+        })
+        it('404 on bad author query',() => {
+            return request 
+                .get('/api/articles/?author=batman')
+                .expect(404)
+                .then(({body: {msg}})=>{
+                    expect(msg).to.equal('not found')
+                })
+        })
+        it('has a total count', () => {
+            return request
+                .get('/api/articles/')
+                .expect(200)
+                .then(({body: {total_count}}) => {
+                    expect(total_count).to.equal('13')
+                })
+        });
+        it('total count changes with queries', () => {
+            return request
+                .get('/api/articles/?limit=4&page=2&topic=cats')
+                .expect(200)
+                .then(({body: {total_count}}) => {
+                    expect(total_count).to.equal('1')
+                })
+        });
         
     });
     describe('api/article/:id', () => {

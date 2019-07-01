@@ -34,15 +34,9 @@ const addSortByAndOrder = (query, sort_by, order) => {
 
 
 // adds pagination to query
-const addPagination = (query, limit, p) => {
+const addPagination = (query, limit = 10, p = 1) => {
     query.limit(limit)
         .offset(limit * (p - 1));
-};
-
-// condenses on a given property and adds a count
-const condenseAndAddCount = (query, condenseOn, alias = 'count') => {
-    query.count({[alias]: condenseOn})
-        .groupBy(`${query._single.table}.id`);
 };
 
 // promise.all utils
@@ -68,7 +62,7 @@ const rejectEmptyArr = (arr, errObj = {code: 404, msg: 'not found'}) => {
 const rejectBadOrderQuery = (order, arr) => {
     if (!(['asc', 'desc', undefined]).includes(order)) {
         arr.unshift(Promise.reject({code: 400, msg: 'bad request'}))
-    }
+    } else Promise.resolve()
 }
 
-module.exports = { addSortByAndOrder, condenseAndAddCount, rejectBadOrderQuery, addPagination, rejectEmptyArr, checkForBadProperty, formatComments, formatDate, makeRefObj}
+module.exports = { addSortByAndOrder, rejectBadOrderQuery, addPagination, rejectEmptyArr, checkForBadProperty, formatComments, formatDate, makeRefObj}

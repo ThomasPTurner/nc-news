@@ -4,7 +4,7 @@
     },
     "GET /api/topics": {
       "description": "serves an array of all topics",
-      "queries": [],
+      "queries": ["sort_by", "order", "limit", "p"],
       "exampleResponse": {
         "topics": [{ "slug": "football", "description": "Footie!" }]
       }
@@ -133,7 +133,7 @@
     },
     "GET /api/users/" :{
         "description": "serves up an array of all users",
-        "queries": [],
+        "queries": ["sort_by", "order", "limit", "p"],
         "exampleResponse": [
             {
                 "username": "xXxSephirothxXx",
