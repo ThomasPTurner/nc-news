@@ -55,22 +55,22 @@ describe('api/articles', () => {
                     expect(msg).to.equal('bad request: value cannot be null')
                 })
         });
-        it('404 on post from a username that does not exist', () => {
+        it('400 on post from a username that does not exist', () => {
             return request
                 .post('/api/articles/')
                 .send({body: 'this is a new article', username: 'foo', title: 'this is a title', topic: 'cats'})
-                .expect(404)
+                .expect(400)
                 .then(({body: {msg}}) => {
-                    expect(msg).to.equal('dependant resource not found')
+                    expect(msg).to.equal('bad input')
                 })
         });
-        it('404 on post to a topic that does not exist', () => {
+        it('400 on post to a topic that does not exist', () => {
             return request
                 .post('/api/articles/')
                 .send({body: 'this is a new article', username: 'fred', title: 'this is a title', topic: 'foo'})
-                .expect(404)
+                .expect(400)
                 .then(({body: {msg}}) => {
-                    expect(msg).to.equal('dependant resource not found')
+                    expect(msg).to.equal('bad input')
                 })
         });
         it('400 on additional keys', () => {

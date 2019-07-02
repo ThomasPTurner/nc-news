@@ -24,8 +24,9 @@ exports.fetchUserById = (id) => connection('users')
     .select('*')
     .where('username','=',id)
 
-exports.createUser = (body) => {
+exports.createUser = ({username, avatar_url, name}) => {
+    if (!username || !avatar_url || !name) return Promise.reject({code:400, msg: 'bad request'})
     return connection('users')
-        .insert(body)
+        .insert({username, avatar_url, name})
         .returning('*')
 }

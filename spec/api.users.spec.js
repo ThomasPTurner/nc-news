@@ -30,14 +30,50 @@ describe('api/users', () => {
             });
         });
         describe('POST', () => {
-            it.only('posts a new user', () => {
+            it('posts a new user', () => {
                 return request
                     .post('/api/users/')
                     .send({username: 'foo', name: 'bar', avatar_url: 'www.foo.bar'})
                     .expect(201)
-                    .then(({body: {user: { username}}})=>{
+                    .then(({body: {user: { username }}})=>{
                         expect(username).to.equal('foo')
                     })
+            });
+            it('400 when posting with a username that already exists', () => {
+                return request
+                    .post('/api/users/')
+                    .send({username: 'fred', name: 'bar', avatar_url: 'www.foo.bar'})
+                    .expect(400)
+                    .then(({body: {msg}}) => {
+                        expect(msg).to.equal('bad input');
+                    });
+            });
+            it('400 when posting without all required items', () => {
+                return request
+                    .post('/api/users/')
+                    .send({username: 'foo', avatar_url: 'www.foo.bar'})
+                    .expect(400)
+                    .then(({body: {msg}}) => {
+                        expect(msg).to.equal('bad request');
+                    });
+            });
+            it('400 when with null values', () => {
+                return request
+                    .post('/api/users/')
+                    .send({username: null, name: 'bar', avatar_url: 'www.foo.bar'})
+                    .expect(400)
+                    .then(({body: {msg}}) => {
+                        expect(msg).to.equal('bad request');
+                    });
+            });
+            it('returned user has correct keys', () => {
+                return request
+                    .post('/api/users/')
+                    .send({username: 'foo', name: 'bar', avatar_url: 'www.foo.bar'})
+                    .expect(201)
+                    .then(( {body: {user}} ) => {
+                        expect(user).to.have.keys('username', 'avatar_url', 'name', 'article_count', 'article_votes', 'comment_count', 'comment_votes')
+                    });
             });
         });
         describe('GET', () => {
@@ -46,11 +82,11 @@ describe('api/users', () => {
                     .get('/api/users/')
                     .expect(200)
                     .then(( {body: {users}} ) => {
-                        expect(users.length).to.equal(5);
-                        expect(users[0]).to.have.keys('username', 'avatar_url', 'name')
+                        expect(users.length).to.be.greaterThan(1)
+                        expect(users[0]).to.have.keys('username', 'avatar_url', 'name', 'article_count', 'article_votes', 'comment_count', 'comment_votes')
                     });
             });
-            it.only('users have an articles count', () => {
+            it('users have an articles count', () => {
                 return request
                     .get('/api/users/')
                     .expect(200)

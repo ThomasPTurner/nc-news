@@ -14,3 +14,9 @@ exports.fetchTopics = ({sort_by = 'slug', order, limit, p}) => {
     return Promise.all(promiseArr)
         .then((promises) => promises[promises.length - 1])
 }
+
+exports.createTopic = (({slug, description}) => {
+    return connection('topics')
+        .insert({slug, description})
+        .returning('*')
+})

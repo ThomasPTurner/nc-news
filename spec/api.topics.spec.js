@@ -22,15 +22,57 @@ describe('api/topics', () => {
                 .delete('/api/topics')
                 .expect(405)
         });
-        it('POST', () => {
-            return request
-                .post('/api/topics')
-                .expect(405)
-        });
         it('DELETE', () => {
             return request
                 .delete('/api/topics')
                 .expect(405)
+        });
+    });
+    describe('POST', () => {
+        it('posts an topic', () => {
+            return request
+                .post('/api/topics/')
+                .send({slug: 'dinosaurs', description: 'terrible lizards. Or are they?'})
+                .expect(201)
+                .then(({body: {topic: {slug}}}) => {
+                    expect(slug).to.equal('dinosaurs')
+                })
+        });
+        it('400 when posting with a username that already exists', () => {
+            return request
+                .post('/api/topics/')
+                .send({slug: 'mitch', description: 'terrible lizards. Or are they?'})
+                .expect(400)
+                .then(({body: {msg}}) => {
+                    expect(msg).to.equal('bad input');
+                });
+        });
+        it('400 when posting without all required items', () => {
+            return request
+                .post('/api/topics/')
+                .send({slug: 'dinosaurs'})
+                .expect(400)
+                .then(({body: {msg}}) => {
+                    expect(msg).to.equal('bad request: value cannot be null');
+                });
+        });
+        it('400 when with null values', () => {
+            return request
+                .post('/api/topics/')
+                .send({slug: null, description: 'terrible lizards. Or are they?'})
+                .expect(400)
+                .then(({body: {msg}}) => {
+                    expect(msg).to.equal('bad request: value cannot be null');
+                });
+        });
+        it('returned user has correct keys', () => {
+            return request
+                .post('/api/topics/')
+                .send({slug: 'dinosaurs', description: 'terrible lizards. Or are they?'})
+                .expect(201)
+                .then(( {body: {topic}} ) => {
+                    expect(topic).to.have.keys('slug', 'article_count', 'description')
+                });
         });
     });
     describe('GET', () => {
@@ -40,7 +82,7 @@ describe('api/topics', () => {
                 .expect(200)
                 .then(( {body: {topics}} ) => {
                     expect(topics.length).to.be.greaterThan(1);
-                    expect(topics[0]).to.have.keys('slug', 'description')
+                    expect(topics[0]).to.have.keys('slug', 'description', 'article_count')
                 });
         });
         it('topics are sorted by descending slug by default', () => {
@@ -120,7 +162,6 @@ describe('api/topics', () => {
                 .get('/api/topics')
                 .expect(200)
                 .then(({body: {topics: [,,{article_count}]}}) => {
-                    console.log(article_count)
                     expect(article_count).to.equal('1')
                 })
         })

@@ -9,11 +9,11 @@ exports.handle500 = (err, req, res, next) => {
 }
 
 exports.handlePGerrors = (err, req, res, next) => {
-    console.log(err)
     const errRefObj = {
         ['22P02']: {code: 400, msg: 'bad request'},
-        ['23503']: {code: 404, msg: 'dependant resource not found'},
+        ['23503']: {code: 400, msg: 'bad input'},
         ['23502']: {code: 400, msg: 'bad request: value cannot be null'},
+        ['23505']: {code: 400, msg: 'bad input'},
         ['22001']: {code: 400, msg: 'bad input'},
         ['42703']: {code: 400, msg: 'bad request'}
     };

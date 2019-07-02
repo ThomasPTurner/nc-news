@@ -14,8 +14,13 @@ const getUserById = ({params: {user_id}}, res, next)=> fetchUserById(user_id)
 const postUser = ({body}, res, next) => {
         createUser(body)
                 .then(([user]) => {
+                        user.comment_count = 0
+                        user.comment_votes = 0
+                        user.article_count = 0
+                        user.article_votes = 0 
                         res.status(201).send({user})
                 })
+                .catch(next)
         
 }
 
