@@ -1,4 +1,4 @@
-const  { fetchUsers, fetchUserById }  = require('../models');
+const  { fetchUsers, fetchUserById, createUser }  = require('../models');
 const { rejectEmptyArr } = require('../db/utils/utils');
 
 const getUsers = ({query}, res, next) => fetchUsers(query)
@@ -11,4 +11,12 @@ const getUserById = ({params: {user_id}}, res, next)=> fetchUserById(user_id)
         .then(([user]) => res.status(200).send({user}))
         .catch(next);
 
-module.exports = { getUsers, getUserById }
+const postUser = ({body}, res, next) => {
+        createUser(body)
+                .then(([user]) => {
+                        res.status(201).send({user})
+                })
+        
+}
+
+module.exports = { getUsers, getUserById, postUser }

@@ -10,7 +10,6 @@ exports.createComment = ({id: article_id}, {username: author, body}) => {
 }
 
 exports.fetchComments = ({id: article_id}, {p=1, sort_by, order, limit=10 }= {}) => {
- 
     const commentsQuery = connection('comments')
         .select('*')
         .modify(commentsQuery => {
@@ -18,7 +17,6 @@ exports.fetchComments = ({id: article_id}, {p=1, sort_by, order, limit=10 }= {})
         })
     addSortByAndOrder(commentsQuery, sort_by, order)
     addPagination(commentsQuery, limit, p)
-
     const promiseArr = [commentsQuery]
     rejectBadOrderQuery(order, promiseArr)
     return Promise.all(promiseArr)

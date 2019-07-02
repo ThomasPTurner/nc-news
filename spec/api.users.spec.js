@@ -23,15 +23,21 @@ describe('api/users', () => {
                     .delete('/api/users')
                     .expect(405)
             });
-            it('POST', () => {
-                return request
-                    .post('/api/users')
-                    .expect(405)
-            });
             it('DELETE', () => {
                 return request
                     .delete('/api/users')
                     .expect(405)
+            });
+        });
+        describe('POST', () => {
+            it.only('posts a new user', () => {
+                return request
+                    .post('/api/users/')
+                    .send({username: 'foo', name: 'bar', avatar_url: 'www.foo.bar'})
+                    .expect(201)
+                    .then(({body: {user: { username}}})=>{
+                        expect(username).to.equal('foo')
+                    })
             });
         });
         describe('GET', () => {
@@ -53,7 +59,7 @@ describe('api/users', () => {
                     })
                 
             });
-            it.only('users have a comment count', () => {
+            it('users have a comment count', () => {
                 return request
                     .get('/api/users/')
                     .expect(200)
@@ -62,7 +68,7 @@ describe('api/users', () => {
                     })
                 
             });
-            it.only('users have a comment votes total', () => {
+            it('users have a comment votes total', () => {
                 return request
                     .get('/api/users/')
                     .expect(200)
@@ -70,7 +76,7 @@ describe('api/users', () => {
                         expect(comment_votes).to.equal('36')
                     })
             });
-            it.only('users have an article votes total', () => {
+            it('users have an article votes total', () => {
                 return request
                     .get('/api/users/')
                     .expect(200)

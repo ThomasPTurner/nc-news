@@ -19,9 +19,13 @@ exports.fetchUsers = ({sort_by = 'username', order, limit, p}) => {
     return Promise.all(promiseArr)
         .then((promises) => promises[promises.length - 1])
 }
-// add article votes, article totals, comment totals and comment votes totals.
-
 
 exports.fetchUserById = (id) => connection('users')
     .select('*')
     .where('username','=',id)
+
+exports.createUser = (body) => {
+    return connection('users')
+        .insert(body)
+        .returning('*')
+}

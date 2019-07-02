@@ -1,9 +1,10 @@
 const express = require('express');
-const { getUsers, getUserById } = require('../controllers/');
+const { postUser, getUsers, getUserById } = require('../controllers/');
 const usersRouter = express.Router();
 const { badMethod } = require('../errors')
 
 usersRouter.route('/')
+    .post(postUser)
     .get(getUsers)
     .all(badMethod)
 
