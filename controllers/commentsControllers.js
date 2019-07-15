@@ -5,7 +5,7 @@ const postComment = ({params, body}, res, next) => createComment(params, body)
         .then(([comment]) => res.status(201).send({comment}))
         .catch(next)
 
-const getComments = ({params, query}, res, next) =>  fetchArticles(params, {})
+const getComments = ({params, query}, res, next) => fetchArticles(params, {})
         .then(rejectEmptyArr)
         .then(() => Promise.all([fetchComments(params, query),fetchCommentCount(params)]))
         .then(([comments,{total_count}]) => {
