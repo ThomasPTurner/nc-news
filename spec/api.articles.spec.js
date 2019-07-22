@@ -341,12 +341,12 @@ module.exports = () => {
                             expect(comment_count).to.equal('13');
                         });
                 });
-                it('404 on valid but absent id', ()=> {
+                it('400 on valid but absent id', ()=> {
                     return request 
                         .get('/api/articles/9001')
-                        .expect(404)
+                        .expect(400)
                         .then(({body: {msg}}) => {
-                            expect(msg).to.equal('not found')
+                            expect(msg).to.equal('bad request')
                         });
                 });
                 it('400 on invalid id', ()=> {

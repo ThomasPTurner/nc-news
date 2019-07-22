@@ -9,7 +9,7 @@ const getArticles = ({params, query}, res, next) => Promise.all([fetchArticles(p
     .catch(next)
 
 const getArticleById = ({params, query}, res, next)=> fetchArticles(params, query)
-    .then(rejectEmptyArr)
+    .then((result)=>rejectEmptyArr(result, {code: 400, msg: 'bad request'}))
     .then(([article]) => res.status(200).send({article}))
     .catch(next);
 
