@@ -1,7 +1,7 @@
 const { connection } = require('../connection')
 const { addSortByAndOrder, addPagination, rejectBadOrderQuery } = require('../db/utils/utils')
 
-exports.fetchUsers = ({sort_by = 'username', order, limit, p}) => {
+exports.fetchUsers = ({sort_by = 'username', order, limit, p}, username) => {
     const usersQuery = connection('users')
         .select('users.*')
         .leftJoin('articles', 'username', '=', 'articles.author')
@@ -11,6 +11,9 @@ exports.fetchUsers = ({sort_by = 'username', order, limit, p}) => {
         .countDistinct({comment_count: 'comments.id'})
         .sumDistinct({comment_votes: 'comments.votes'})
         .sumDistinct({article_votes: 'articles.votes'})
+        .modify((query)=> {
+            if (user) query.where({username})
+        })
     addPagination(usersQuery, limit, p)
     addSortByAndOrder(usersQuery, sort_by, order)
     
