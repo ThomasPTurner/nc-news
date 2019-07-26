@@ -6,7 +6,7 @@ const getUsers = ({query}, res, next) => fetchUsers(query)
         .catch(next);
 
 
-const getUserById = ({params: {user_id}}, res, next)=> fetchUserById(user_id)
+const getUserById = ({params: {user_id}}, res, next)=> fetchUsers({},user_id)
         .then(rejectEmptyArr)
         .then(([user]) => res.status(200).send({user}))
         .catch(next);

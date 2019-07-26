@@ -222,8 +222,42 @@ module.exports = () => {
                         .expect(200)
                         .then(({body: {user}}) => {
                             expect(user.username).to.equal('fred');
-                            expect(user).to.have.keys('username', 'avatar_url', 'name');
+                            expect(user).to.include.keys('username', 'avatar_url', 'name');
                         });
+                });
+                it('users have an articles count', () => {
+                    return request
+                        .get('/api/users/fred')
+                        .expect(200)
+                        .then(({body: {user: {article_count}}})=> {
+                            expect(article_count).to.equal('0')
+                        })
+                    
+                });
+                it('users have a comment count', () => {
+                    return request
+                        .get('/api/users/fred')
+                        .expect(200)
+                        .then(({body: {user: {comment_count}}})=> {
+                            expect(comment_count).to.equal('0')
+                        })
+                    
+                });
+                it('users have a comment votes total', () => {
+                    return request
+                        .get('/api/users/fred')
+                        .expect(200)
+                        .then(({body: {user: {comment_votes}}})=> {
+                            expect(comment_votes).to.be.null
+                        })
+                });
+                it('users have an article votes total', () => {
+                    return request
+                        .get('/api/users/fred')
+                        .expect(200)
+                        .then(({body: {user: {article_votes}}})=> {
+                            expect(article_votes).to.be.null
+                        })
                 });
                 it('404 on valid but absent id', ()=> {
                     return request 
