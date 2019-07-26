@@ -12,7 +12,7 @@ exports.fetchUsers = ({sort_by = 'username', order, limit, p}, username) => {
         .sumDistinct({comment_votes: 'comments.votes'})
         .sumDistinct({article_votes: 'articles.votes'})
         .modify((query)=> {
-            if (user) query.where({username})
+            if (username) query.where({username})
         })
     addPagination(usersQuery, limit, p)
     addSortByAndOrder(usersQuery, sort_by, order)

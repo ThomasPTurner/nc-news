@@ -8,7 +8,7 @@ const {connection} = require('../connection');
 
 
 module.exports = () => {
-    return describe('api/users', () => {
+    return describe.only('api/users', () => {
         describe('GET', () => {
             describe('invalid methods caught', () => {
                 it('PUT', () => {
