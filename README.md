@@ -124,6 +124,25 @@ This example test checks that a valid GET request will return an array of object
 
 This repo is set up to be hosted on heroku, both the application and the database. 
 
+To deploy another, follow the following steps:
+
+Go to the backend directory and set up the heroku repository and database:
+
+```
+cd backend
+heroku create
+heroku addons:create heroku-postgresql:hobby-dev
+```
+
+push to the heroku remote
+
+```
+git add .
+git commit -m "heroku initial commit"
+git push heroku master
+
+```
+
 With the code pushed to a heroku repo and a heroku database added-on, one can check the database is linked to the repo with:
 
 ```bash
