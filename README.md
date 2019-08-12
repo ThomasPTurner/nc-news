@@ -12,6 +12,13 @@ An API to serve a reddit-like social media website's frontend.
 
 ```
 
+a global installation of the following is required:
+
+``
+npm i pg knex nodemon -g
+``
+
+
 ### Installing
 
 #clone the repo
